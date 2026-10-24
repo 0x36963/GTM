@@ -158,10 +158,13 @@ Heat is the main tension: the crew has to move fast but quietly, and Moles try t
 - **No pay-to-win.** All money is stored on the server (Nakama wallet) and changed only by the server.
 - Monetization: undecided. Likely a cosmetics store / battle pass. No gameplay advantages for sale.
 
-## 14. Art direction (locked 2026-10-24)
+## 14. Art direction
 
-### Style: "Neon Grime" line art
-- **Clean 2D cartoon line art**: thick dark navy/purple outlines (not pure black), flat colours, simple cel shading. Think adult animated series, not a kids' game. No texture noise.
+### Style: pixel art (switched 2026-10-24, being explored)
+- **Pixel art via low-resolution rendering.** The 3D world renders into a small viewport (e.g. 320×180 or 480×270) that is upscaled with nearest filtering. Every object, including rotated sprites, leaning walls and lights, lands on one shared pixel grid, so AI-generated art never needs a perfect grid itself.
+- Source art should be authored as pixel art at roughly the on-screen pixel density, so it doesn't turn to noise when rendered small. Pixel density (pixels per metre on screen) is still to be chosen.
+- The earlier "Neon Grime" line-art assets in `assets/` are placeholders until pixel-art replacements exist.
+- Mood and content stay the same: grimy, modern, tiny Amsterdam at night.
 - **Grime is put in shapes, not noise**: cracked asphalt, puddles, trash bags, graffiti, rusted shutters, stains, AC units, flickering signs.
 - **Modern setting**: hoodies, puffer jackets, balaclavas, sneakers, phones, e-scooters, delivery bikes, CCTV, vape shops, LED signs.
 - **Palette**: a muted, dirty concrete base; colour comes from light sources (sodium orange streetlights, pink/cyan/purple neon).
@@ -170,8 +173,8 @@ Heat is the main tension: the crew has to move fast but quietly, and Moles try t
 - **AI generates flat parts, the engine makes the view.** Image models can't reliably produce GTA 2's perspective, so we never ask them to. Generate orthographic pieces (roofs from straight above, facades straight-on, seamless ground textures, top-down sprites). Assembling them in 3D produces the GTA 2 view.
 
 ### Camera: GTA 2 top-down
-- The camera looks **straight down with perspective**. Building walls lean outward from the screen centre (GTA 2 parallax). The camera zooms out with vehicle speed.
-- **Camera tilt is tunable.** Prototype 0° (pure GTA 2) against about 15–25° from vertical to show more of the canal-house facades.
+- The camera looks **straight down with perspective**. Building walls lean outward from the screen centre (GTA 2 parallax). The camera rises slightly with vehicle speed (at most +8 m), never far.
+- **Tilt is locked at 0°** (pure GTA 2, decided 2026-10-24). Facades are only seen as they lean near the screen edges.
 - **Characters and vehicles are single top-down sprites, rotated freely.** No directional sprite sheets.
 - **Identity comes from colour and silhouette**, because faces aren't visible in the world: each player has a strong signature jacket/hoodie colour, plus hats, hair and backpacks, plus name tags.
 - **Faces live in the UI**: HUD portrait, sit-down screen, voting cards, role reveal. This is where expressive character art goes.

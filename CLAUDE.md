@@ -14,7 +14,7 @@ Guidance for Claude Code when working in this repository.
 - **Backend:** Nakama (auth, matchmaking, wallet, storage), run locally via Docker Compose.
 - **Game server:** server-authoritative. Headless Godot build sharing gameplay code with the client (not yet final, see GDD §15/§17).
 - **Rendering:** 3D world with 2D art, GTA 2 style. Box buildings with roof/wall textures, flat top-down sprites for characters and vehicles, a perspective camera looking straight down. Gameplay logic is 2D on the ground plane (x/y); only rendering is 3D.
-- **Art:** clean cartoon line art ("Neon Grime", GDD §14), generated with Nano Banana Pro via Magnific by the user, then processed by our pipeline scripts.
+- **Art:** pixel art via low-resolution rendering (GDD §14; current line-art assets are placeholders), generated with Nano Banana Pro via Magnific by the user, then processed by our pipeline scripts.
 
 ## Rules that matter
 
@@ -52,5 +52,5 @@ The Magnific MCP is connected, but the user's unlimited generations work only in
 
 - Godot is at `/Applications/Godot.app` (4.7.2). Binary: `/Applications/Godot.app/Contents/MacOS/Godot`.
 - Import after adding assets: `Godot --headless --path . --import`.
-- The current main scene is `scenes/test/canal_block_test.tscn`. It can save a screenshot and quit, which is how to check rendering without the user: `Godot --path . -- --screenshot=/abs/path.png --tilt=15 --height=40 --night` (pass each flag as a separate argument). macOS has no `timeout`; use `perl -e 'alarm 60; exec @ARGV' Godot ...`.
+- The current main scene is `scenes/test/canal_block_test.tscn`. It can save a screenshot and quit, which is how to check rendering without the user: `Godot --path . -- --screenshot=/abs/path.png --pixel=4 --height=40 --night` (pass each flag as a separate argument). macOS has no `timeout`; use `perl -e 'alarm 60; exec @ARGV' Godot ...`.
 - Commit `.import` and `.uid` files; `.godot/` is ignored.

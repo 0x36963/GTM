@@ -3,9 +3,12 @@ extends Node3D
 ## seen through the GTA 2 camera. Everything is generated in code from
 ## assets/art_manifest.json so new art shows up without editing the scene.
 ##
-## Controls: WASD/arrows drive, Q/E tilt, Z/X zoom, N night.
+## The world renders into a low-resolution SubViewport that is scaled up with
+## nearest filtering, which gives the whole 3D scene one shared pixel grid.
+##
+## Controls: WASD/arrows drive, Z/X zoom, [ ] pixel size, N night.
 ## Screenshot mode:
-##   Godot --path . -- --screenshot=out.png [--tilt=20] [--height=40] [--night]
+##   Godot --path . -- --screenshot=out.png [--pixel=4] [--height=40] [--night]
 ##
 ## Layout (metres, -Z is north/up on screen): a canal runs east-west through
 ## the middle, crossed by a street and a tram line. Two back-to-back rows of
@@ -44,9 +47,11 @@ var _tram_dir := -1.0
 var _hud: Label
 var _shot_path := ""
 var _frames := 0
+var _keys_down: Dictionary = {}
 
 @onready var _car: Car = $Car
 @onready var _camera: GtaCamera = $GtaCamera
+@onready var _view: SubViewportContainer = get_parent().get_parent()
 
 
 func _ready() -> void:
@@ -71,12 +76,18 @@ func _process(delta: float) -> void:
 	_water_mat.uv1_offset.x += delta * 0.01
 	_move_tram(delta)
 
-	var tilt_input := float(Input.is_physical_key_pressed(KEY_E)) - float(Input.is_physical_key_pressed(KEY_Q))
 	var zoom_input := float(Input.is_physical_key_pressed(KEY_X)) - float(Input.is_physical_key_pressed(KEY_Z))
-	_camera.tilt_deg = clampf(_camera.tilt_deg + tilt_input * 20.0 * delta, 0.0, 45.0)
 	_camera.base_height = clampf(_camera.base_height + zoom_input * 20.0 * delta, 15.0, 90.0)
-	_hud.text = "WASD / arrows: drive    Q/E: tilt %d°    Z/X: height %d m    N: %s" % [
-		roundi(_camera.tilt_deg), roundi(_camera.base_height), "day" if _night else "night"]
+	if _just_pressed(KEY_N):
+		_set_night(not _night)
+	if _just_pressed(KEY_BRACKETLEFT):
+		_view.stretch_shrink = maxi(_view.stretch_shrink - 1, 1)
+	if _just_pressed(KEY_BRACKETRIGHT):
+		_view.stretch_shrink = mini(_view.stretch_shrink + 1, 8)
+	var res := _view.get_child(0) as SubViewport
+	_hud.text = "WASD / arrows: drive    Z/X: height %d m    [ ]: pixels %d (%d×%d)    N: %s" % [
+		roundi(_camera.base_height), _view.stretch_shrink, res.size.x, res.size.y,
+		"day" if _night else "night"]
 
 	if _shot_path != "":
 		_frames += 1
@@ -84,10 +95,13 @@ func _process(delta: float) -> void:
 			_take_screenshot()
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	var key := event as InputEventKey
-	if key and key.pressed and not key.echo and key.physical_keycode == KEY_N:
-		_set_night(not _night)
+## Polled instead of using input events, which the SubViewportContainer
+## doesn't forward for keys.
+func _just_pressed(key: Key) -> bool:
+	var down := Input.is_physical_key_pressed(key)
+	var was_down: bool = _keys_down.get(key, false)
+	_keys_down[key] = down
+	return down and not was_down
 
 
 # --- setup ----------------------------------------------------------------
@@ -98,8 +112,8 @@ func _parse_args() -> void:
 		match parts[0]:
 			"screenshot":
 				_shot_path = parts[1]
-			"tilt":
-				_camera.tilt_deg = float(parts[1])
+			"pixel":
+				_view.stretch_shrink = int(parts[1])
 			"height":
 				_camera.base_height = float(parts[1])
 			"night":
@@ -108,7 +122,8 @@ func _parse_args() -> void:
 
 func _take_screenshot() -> void:
 	await RenderingServer.frame_post_draw
-	get_viewport().get_texture().get_image().save_png(_shot_path)
+	# The root viewport holds the upscaled world plus the HUD.
+	get_tree().root.get_texture().get_image().save_png(_shot_path)
 	get_tree().quit()
 
 
@@ -431,8 +446,9 @@ func _build_bounds() -> void:
 
 
 func _build_hud() -> void:
+	# Added outside the low-res SubViewport so the text stays sharp.
 	var layer := CanvasLayer.new()
-	add_child(layer)
+	_view.add_child.call_deferred(layer)
 	_hud = Label.new()
 	_hud.position = Vector2(16.0, 12.0)
 	_hud.add_theme_font_size_override("font_size", 18)
