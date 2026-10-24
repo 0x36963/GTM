@@ -21,8 +21,6 @@ build/
 .env
 *.keystore
 
-# Raw art: untracked until git-lfs is set up
-art/raw/
 
 # Python
 .venv/

@@ -30,7 +30,7 @@ Guidance for Claude Code when working in this repository.
 - Files and folders: `snake_case`. Classes (`class_name`): `PascalCase`. Signals: past tense (`job_completed`).
 - One scene per reusable thing, and the script sits next to its scene.
 - Keep Godot scene/resource files as text (`.tscn`, `.tres`) so they diff and can be edited directly.
-- Art files should go through Git LFS (see `.gitattributes`; currently disabled until git-lfs is installed).
+- Art files go through Git LFS (see `.gitattributes`). git-lfs is installed user-locally in `~/.local/bin` and enabled with `git lfs install --local`.
 
 ## Art pipeline notes
 
