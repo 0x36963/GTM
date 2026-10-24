@@ -27,6 +27,152 @@ BG_TOLERANCE = 28
 FRINGE_PX = 3
 
 
+# --- pixel art --------------------------------------------------------------
+#
+# AI "pixel art" is drawn as big blocks (e.g. 5.73 source pixels per art
+# pixel). to_native() finds that grid and samples one value per block, which
+# recovers the art at its true resolution. Entries opt in with "pixel": {...}.
+
+def grid_phase(gray: np.ndarray, block: float, axis: int) -> float:
+    """Offset of the block grid along one axis, from the edge positions."""
+    edges = np.abs(np.diff(gray, axis=axis)).mean(axis=1 - axis)
+    x = np.arange(len(edges)) + 0.5
+    phase = np.angle((edges * np.exp(2j * np.pi * x / block)).sum())
+    return (-phase / (2 * np.pi) * block) % block
+
+
+def to_native(rgb: np.ndarray, block: float) -> np.ndarray:
+    """Sample the median colour at the centre of every block."""
+    gray = rgb.astype(np.float32).mean(axis=2)
+    r = max(1, int(block / 4))
+    out_axes = []
+    for axis, n in ((1, rgb.shape[1]), (0, rgb.shape[0])):
+        start = grid_phase(gray, block, axis) + block / 2
+        if start - block / 2 > block / 2:
+            start -= block
+        centers = np.arange(start, n - r, block)
+        out_axes.append(np.round(centers[centers >= r]).astype(int))
+    xs, ys = out_axes
+    out = np.zeros((len(ys), len(xs), 3), np.uint8)
+    for j, y in enumerate(ys):
+        for i, x in enumerate(xs):
+            out[j, i] = np.median(rgb[y - r:y + r + 1, x - r:x + r + 1].reshape(-1, 3), axis=0)
+    return out
+
+
+def quantize(rgba: np.ndarray, colors: int) -> np.ndarray:
+    """Reduce opaque pixels to a small palette; alpha stays binary."""
+    rgb = Image.fromarray(rgba[..., :3])
+    q = rgb.quantize(colors=colors, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
+    out = rgba.copy()
+    out[..., :3] = np.asarray(q.convert("RGB"))
+    out[out[..., 3] == 0] = 0
+    return out
+
+
+def binary_background(rgb: np.ndarray) -> np.ndarray:
+    """RGBA with hard edges: near-white connected to the border is cleared."""
+    near_white = (255 - rgb.astype(int)).max(axis=2) <= 40
+    labels, _ = ndimage.label(near_white)
+    border = np.unique(np.concatenate([labels[0], labels[-1], labels[:, 0], labels[:, -1]]))
+    bg = np.isin(labels, border[border > 0])
+    rgba = np.dstack([rgb, np.where(bg, 0, 255).astype(np.uint8)])
+    rgba[bg] = 0
+    return rgba
+
+
+def load_native(spec: dict) -> np.ndarray:
+    img = Image.open(RAW / spec["source"]).convert("RGB")
+    if "crop" in spec:
+        img = img.crop(tuple(spec["crop"]))
+    native = to_native(np.asarray(img), spec["pixel"]["block"])
+    for r0, r1 in reversed(spec["pixel"].get("remove_rows", [])):
+        native = np.concatenate([native[:r0], native[r1:]])
+    return native
+
+
+def save_png(rgba_or_rgb: np.ndarray, rel: str) -> Path:
+    path = OUT / rel
+    path.parent.mkdir(parents=True, exist_ok=True)
+    Image.fromarray(rgba_or_rgb).save(path, optimize=True)
+    return path
+
+
+def process_pixel_texture(spec: dict) -> dict:
+    native = load_native(spec).astype(np.float32)
+    # A few pixels of cross-fade hide what the repeat cut leaves; quantizing
+    # afterwards snaps the blended pixels back onto the palette.
+    blend = spec.get("blend_px", 4)
+    if "x" in spec.get("seamless", ""):
+        native = wrap_axis(native, blend, axis=1)
+    if "y" in spec.get("seamless", ""):
+        native = wrap_axis(native, blend, axis=0)
+    rgba = np.dstack([native.astype(np.uint8), np.full(native.shape[:2], 255, np.uint8)])
+    rgba = quantize(rgba, spec["pixel"].get("colors", 24))
+    path = save_png(rgba[..., :3], f"textures/{spec['name']}.png")
+    h, w = rgba.shape[:2]
+    ppm = spec["pixel"]["ppm"]
+    return {"file": str(path.relative_to(OUT)), "size_px": [w, h],
+            "meters": [round(w / ppm, 3), round(h / ppm, 3)], "pixel": True}
+
+
+def process_pixel_sheet(spec: dict) -> dict:
+    rgba = binary_background(load_native(spec))
+    solid = rgba[..., 3] > 0
+    labels, n = ndimage.label(ndimage.binary_dilation(solid, iterations=2))
+    boxes = [b for b, s in zip(ndimage.find_objects(labels), ndimage.sum(solid, labels, range(1, n + 1)))
+             if s > 20]
+    boxes.sort(key=lambda b: b[1].start)
+    if len(boxes) != len(spec["sprites"]):
+        raise SystemExit(f"{spec['source']}: found {len(boxes)} sprites, manifest lists {len(spec['sprites'])}")
+    out = {}
+    for box, sprite in zip(boxes, spec["sprites"]):
+        if sprite.get("skip"):
+            continue
+        img = rgba[box]
+        # Pixel art turns in exact quarter steps so no pixel gets resampled.
+        # "rotate" is counter-clockwise degrees, as in the line-art path.
+        img = np.rot90(img, k=sprite.get("rotate", 0) // 90)
+        img = quantize(np.ascontiguousarray(img), spec["pixel"].get("colors", 24))
+        path = save_png(img, f"{spec['out_dir']}/{sprite['name']}.png")
+        h, w = img.shape[:2]
+        m_per_px = sprite["length_m"] / h
+        out[sprite["name"]] = {"file": str(path.relative_to(OUT)), "size_px": [w, h],
+                               "size_m": [round(w * m_per_px, 3), round(h * m_per_px, 3)], "pixel": True}
+    return out
+
+
+def process_pixel_facades(spec: dict) -> dict:
+    native = load_native(spec)
+    rgba = binary_background(native)
+    # Clear 1-pixel-thin scraps (leftover background grid lines) from edges.
+    thick = ndimage.binary_opening(rgba[..., 3] > 0, structure=np.ones((2, 2)))
+    rgba[~thick] = 0
+    solid_cols = np.where(rgba[..., 3].max(axis=0) > 0)[0]
+    left, right = int(solid_cols[0]), int(solid_cols[-1]) + 1
+    cuts = [left] + [snap_to_wall(native, x, search=4) for x in spec["split_x"]] + [right]
+    ppm = spec["pixel"]["ppm"]
+    out = {}
+    for name, x0, x1 in zip(spec["houses"], cuts, cuts[1:]):
+        house = keep_largest_part(trim_edge_slivers(rgba[:, x0:x1 + 1], k=1))
+        rows = np.where(house[..., 3].max(axis=1) > 0)[0]
+        house = house[rows[0]:rows[-1] + 1]
+        # Wall width comes from the ground floor; step gables can overhang it.
+        # Eaves: scanning up from the bottom, where the wall first narrows.
+        counts = (house[..., 3] > 0).sum(axis=1)
+        wall_px = int(np.median(counts[-len(counts) // 3:]))
+        narrow = np.where(counts[::-1] < 0.9 * wall_px)[0]
+        eaves_row = len(counts) - int(narrow[0]) if len(narrow) else 0
+        house = quantize(np.ascontiguousarray(house), spec["pixel"].get("colors", 32))
+        path = save_png(house, f"{spec['out_dir']}/{name}.png")
+        h, w = house.shape[:2]
+        out[name] = {"file": str(path.relative_to(OUT)), "size_px": [w, h],
+                     "size_m": [round(w / ppm, 3), round(h / ppm, 3)],
+                     "wall_m": round(wall_px / ppm, 3),
+                     "eaves_m": round((h - eaves_row) / ppm, 3), "pixel": True}
+    return out
+
+
 # --- textures -------------------------------------------------------------
 
 def reduce_contrast(rgb: np.ndarray, amount: float) -> np.ndarray:
@@ -242,16 +388,19 @@ def main() -> None:
     ppm = manifest["pixels_per_meter"]
     result = {"pixels_per_meter": ppm, "textures": {}, "sprites": {}, "facades": {}}
     for spec in manifest["textures"]:
-        result["textures"][spec["name"]] = process_texture(spec)
-        print("texture ", spec["name"])
+        info = process_pixel_texture(spec) if "pixel" in spec else process_texture(spec)
+        result["textures"][spec["name"]] = info
+        print("texture ", spec["name"], info.get("size_px", ""))
     for spec in manifest["sprite_sheets"]:
-        for name, info in process_sheet(spec, ppm).items():
+        sheet = process_pixel_sheet(spec) if "pixel" in spec else process_sheet(spec, ppm)
+        for name, info in sheet.items():
             result["sprites"][name] = info
             print("sprite  ", name, info["size_px"])
     for spec in manifest["facade_rows"]:
-        for name, info in process_facades(spec, ppm).items():
+        rows = process_pixel_facades(spec) if "pixel" in spec else process_facades(spec, ppm)
+        for name, info in rows.items():
             result["facades"][name] = info
-            print("facade  ", name, info["size_px"])
+            print("facade  ", name, info["size_px"], "eaves", info["eaves_m"])
     (OUT / "art_manifest.json").write_text(json.dumps(result, indent=2) + "\n")
 
 

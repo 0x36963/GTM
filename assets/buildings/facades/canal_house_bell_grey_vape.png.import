@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://chyqdpvw7crvv"
-path="res://.godot/imported/canal_house_neck_gable_brown.png-1f429235dc3c34cfc409ed8293a7bd5a.ctex"
+uid="uid://cmkkm3o5urxwq"
+path="res://.godot/imported/canal_house_bell_grey_vape.png-2dbaa18f85006784e6da14cf7a526a98.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/buildings/facades/canal_house_neck_gable_brown.png"
-dest_files=["res://.godot/imported/canal_house_neck_gable_brown.png-1f429235dc3c34cfc409ed8293a7bd5a.ctex"]
+source_file="res://assets/buildings/facades/canal_house_bell_grey_vape.png"
+dest_files=["res://.godot/imported/canal_house_bell_grey_vape.png-2dbaa18f85006784e6da14cf7a526a98.ctex"]
 
 [params]
 

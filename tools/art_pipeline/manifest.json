@@ -2,69 +2,69 @@
   "pixels_per_meter": 64,
   "textures": [
     {
-      "name": "roof_tiles",
-      "source": "tex_roof_tiles_01.jpg",
-      "crop": [0, 0, 1080, 1080],
-      "seamless": "xy",
-      "blend_px": 24,
-      "out_width": 1024,
-      "width_m": 4
-    },
-    {
       "name": "cobblestone",
-      "source": "tex_ground_cobble_herringbone_01.png",
-      "crop": [0, 0, 1350, 1350],
-      "seamless": "xy",
-      "blend_px": 24,
-      "contrast": 0.6,
-      "out_width": 1024,
-      "width_m": 3
-    },
-    {
-      "name": "sidewalk_herringbone",
-      "source": "tex_ground_cobble_herringbone_01.png",
-      "crop": [1395, 0, 2745, 1350],
-      "seamless": "xy",
-      "blend_px": 24,
-      "contrast": 0.75,
-      "out_width": 1024,
-      "width_m": 3
+      "source": "tex_ground_px_01.png",
+      "crop": [528, 23, 1353, 742],
+      "pixel": {"block": 5.733, "ppm": 16, "colors": 16},
+      "seamless": "xy"
     },
     {
       "name": "tram_tracks",
-      "source": "tex_ground_tram_water_01.png",
-      "crop": [1386, 0, 2752, 758],
-      "seamless": "x",
-      "blend_px": 24,
-      "contrast": 0.6,
-      "out_width": 1024,
-      "width_m": 9
+      "source": "tex_ground_px_01.png",
+      "crop": [1399, 23, 2224, 742],
+      "pixel": {"block": 5.733, "ppm": 16, "colors": 16},
+      "seamless": "y"
+    },
+    {
+      "name": "sidewalk_herringbone",
+      "source": "tex_ground_px_01.png",
+      "crop": [528, 792, 1353, 1511],
+      "pixel": {"block": 5.733, "ppm": 16, "colors": 16},
+      "seamless": "xy"
     },
     {
       "name": "canal_water",
-      "source": "tex_ground_tram_water_01.png",
-      "crop": [1386, 778, 2752, 1536],
-      "seamless": "xy",
-      "blend_px": 32,
-      "out_width": 1024,
-      "width_m": 9
+      "source": "tex_ground_px_01.png",
+      "crop": [1399, 792, 2224, 1511],
+      "pixel": {"block": 5.733, "ppm": 16, "colors": 8},
+      "seamless": "xy"
+    },
+    {
+      "name": "roof_tiles",
+      "source": "tex_roof_tiles_px_01.png",
+      "pixel": {"block": 11.47, "ppm": 24, "colors": 12},
+      "seamless": "xy"
     }
   ],
   "sprite_sheets": [
     {
+      "source": "sprites_vehicles_px_01.png",
+      "out_dir": "sprites/vehicles",
+      "pixel": {"block": 11.47, "colors": 24},
+      "sprites": [
+        {"skip": true, "note": "car, side view"},
+        {"skip": true, "note": "houseboat, angled view"},
+        {"skip": true, "note": "bicycle, side view"},
+        {"name": "rowboat", "length_m": 4.0, "rotate": 90},
+        {"name": "tram", "length_m": 22.0, "rotate": 180}
+      ]
+    },
+    {
       "source": "sprites_vehicles_01.png",
       "out_dir": "sprites/vehicles",
+      "note": "line-art placeholders until pixel versions exist",
       "sprites": [
         {"name": "car_hatchback_green", "length_m": 4.0, "rotate": 180},
-        {"name": "tram", "length_m": 22.0, "rotate": 180},
+        {"skip": true, "note": "tram, replaced by pixel version"},
         {"name": "houseboat", "length_m": 18.0},
-        {"name": "rowboat", "length_m": 4.0},
+        {"skip": true, "note": "rowboat, replaced by pixel version"},
         {"skip": true, "note": "side-view bicycle, wrong angle"}
       ]
     },
     {
       "source": "sprites_bicycle_01.png",
       "out_dir": "sprites/vehicles",
+      "note": "line-art placeholder",
       "fill_holes": true,
       "sprites": [
         {"name": "bicycle", "length_m": 1.8}
@@ -73,16 +73,17 @@
   ],
   "facade_rows": [
     {
-      "source": "facades_canal_houses_01.png",
+      "source": "facades_canal_houses_px_01.png",
       "out_dir": "buildings/facades",
-      "row_width_m": 32.0,
-      "split_x": [612, 1156, 1651, 2164],
+      "crop": [0, 0, 2752, 1388],
+      "pixel": {"block": 5.733, "ppm": 16, "colors": 32, "remove_rows": [[101, 141]]},
+      "split_x": [110, 199, 288, 378],
       "houses": [
-        "canal_house_step_gable_cafe",
-        "canal_house_neck_gable_brown",
-        "canal_house_bell_gable_shutter",
-        "canal_house_spout_gable_red",
-        "canal_house_neck_gable_grey"
+        "canal_house_koffie",
+        "canal_house_neck_brown",
+        "canal_house_bell_grey_vape",
+        "canal_house_bell_orange",
+        "canal_house_step_tan"
       ]
     }
   ]

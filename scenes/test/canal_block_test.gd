@@ -24,7 +24,7 @@ const SIDEWALK := 2.5
 const CHUNK := 10.0
 const TRAM_X := 36.0
 ## x ranges that cut through the house rows and quay railings.
-const STREETS := [Vector2(-6.0, 6.0), Vector2(34.0, 44.0)]
+const STREETS := [Vector2(-6.0, 6.0), Vector2(34.0, 47.0)]
 ## [front z, facing] per house row. Facing +1 means the facade faces +Z.
 const ROWS := [[-18.0, 1.0], [-42.0, -1.0], [18.0, -1.0], [42.0, 1.0]]
 ## The world renders at about this many lines whatever the screen size,
@@ -166,17 +166,16 @@ func _build_ground() -> void:
 	_ground_rect(X_MIN, X_MAX, -Z_EXTENT, -CANAL_HALF, 0.0, cobble)
 	_ground_rect(X_MIN, X_MAX, CANAL_HALF, Z_EXTENT, 0.0, cobble)
 
-	# Tram tracks run north-south, so the texture (rails along U) is rotated.
+	# The track texture's rails already run north-south (along V).
 	var tracks := ArtDb.entry("textures", "tram_tracks")
 	var tile := ArtDb.meters(tracks, "meters")
 	var mat := StandardMaterial3D.new()
 	mat.albedo_texture = ArtDb.texture(tracks)
-	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+	mat.texture_filter = ArtDb.filter()
 	var z := -Z_EXTENT + 1.5
-	while z + tile.x <= Z_EXTENT - 1.5:
-		var plane := _add_plane(Vector2(tile.x, tile.y), Vector3(TRAM_X + tile.y / 2.0, 0.05, z + tile.x / 2.0), mat)
-		plane.rotation.y = PI / 2.0
-		z += tile.x
+	while z + tile.y <= Z_EXTENT - 1.5:
+		_add_plane(Vector2(tile.x, tile.y), Vector3(TRAM_X + tile.x / 2.0, 0.05, z + tile.y / 2.0), mat)
+		z += tile.y
 
 
 func _build_canal() -> void:
@@ -222,7 +221,7 @@ func _build_houses() -> void:
 	_roof_mat = StandardMaterial3D.new()
 	_roof_mat.albedo_texture = ArtDb.texture(roof_entry)
 	_roof_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-	_roof_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+	_roof_mat.texture_filter = ArtDb.filter()
 
 	for row: Array in ROWS:
 		var z_front: float = row[0]
@@ -233,7 +232,8 @@ func _build_houses() -> void:
 			var x := seg.x
 			while true:
 				var facade: Dictionary = facades[names[_rng.randi() % names.size()]]
-				var w := ArtDb.meters(facade).x
+				# Houses stand wall to wall; a gable may overhang the wall.
+				var w: float = facade.get("wall_m", ArtDb.meters(facade).x)
 				if x + w > seg.y:
 					break
 				_add_house(facade, x, w, z_front, facing)
@@ -309,7 +309,7 @@ func _facade_mat(tex: Texture2D) -> StandardMaterial3D:
 	mat.albedo_texture = tex
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
 	mat.alpha_scissor_threshold = 0.5
-	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+	mat.texture_filter = ArtDb.filter()
 	return mat
 
 
@@ -418,7 +418,8 @@ func _add_parked_car(pos: Vector3) -> void:
 
 func _build_tram() -> void:
 	var tile := ArtDb.meters(ArtDb.entry("textures", "tram_tracks"), "meters")
-	_tram = _add_sprite("tram", Vector3(TRAM_X + tile.y / 2.0, 0.1, 20.0), 0.0)
+	# The rails in tram_tracks.png sit at about 76% of the tile width.
+	_tram = _add_sprite("tram", Vector3(TRAM_X + tile.x * 0.76, 0.1, 20.0), 0.0)
 
 
 func _move_tram(delta: float) -> void:
@@ -486,7 +487,7 @@ func _world_mat(tex_name: String) -> StandardMaterial3D:
 	mat.uv1_triplanar = true
 	mat.uv1_world_triplanar = true
 	mat.uv1_scale = Vector3(1.0 / m.x, 1.0 / m.y, 1.0 / m.y)
-	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+	mat.texture_filter = ArtDb.filter()
 	return mat
 
 
@@ -499,11 +500,11 @@ func _color_mat(color: Color) -> StandardMaterial3D:
 func _add_sprite(sprite_name: String, pos: Vector3, yaw: float) -> Sprite3D:
 	var sprite := Sprite3D.new()
 	sprite.texture = ArtDb.texture(ArtDb.entry("sprites", sprite_name))
-	sprite.pixel_size = ArtDb.pixel_size()
+	sprite.pixel_size = ArtDb.pixel_size(ArtDb.entry("sprites", sprite_name))
 	sprite.axis = Vector3.AXIS_Y
 	sprite.shaded = true
 	sprite.alpha_cut = SpriteBase3D.ALPHA_CUT_OPAQUE_PREPASS
-	sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+	sprite.texture_filter = ArtDb.filter()
 	sprite.position = pos
 	sprite.rotation.y = yaw
 	add_child(sprite)

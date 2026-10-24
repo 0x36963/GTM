@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dio8sel82mown"
-path="res://.godot/imported/canal_house_step_gable_cafe.png-cd917f3592aa2076c7c38f038b0993d7.ctex"
+uid="uid://dwfjoica26ear"
+path="res://.godot/imported/canal_house_bell_orange.png-f2bcd72f5282aec4c09e04f383203ca1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/buildings/facades/canal_house_step_gable_cafe.png"
-dest_files=["res://.godot/imported/canal_house_step_gable_cafe.png-cd917f3592aa2076c7c38f038b0993d7.ctex"]
+source_file="res://assets/buildings/facades/canal_house_bell_orange.png"
+dest_files=["res://.godot/imported/canal_house_bell_orange.png-f2bcd72f5282aec4c09e04f383203ca1.ctex"]
 
 [params]
 

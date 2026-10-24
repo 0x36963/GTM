@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://gablhhqbwmym"
-path="res://.godot/imported/canal_house_spout_gable_red.png-f334e1dd81fa00448c4c959a1f71001d.ctex"
+uid="uid://buv8tcefapyxu"
+path="res://.godot/imported/canal_house_step_tan.png-3789bee14709460aad1fee060cd26fb1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/buildings/facades/canal_house_spout_gable_red.png"
-dest_files=["res://.godot/imported/canal_house_spout_gable_red.png-f334e1dd81fa00448c4c959a1f71001d.ctex"]
+source_file="res://assets/buildings/facades/canal_house_step_tan.png"
+dest_files=["res://.godot/imported/canal_house_step_tan.png-3789bee14709460aad1fee060cd26fb1.ctex"]
 
 [params]
 

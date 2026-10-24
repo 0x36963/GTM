@@ -1,63 +1,92 @@
 {
   "pixels_per_meter": 64,
   "textures": {
-    "roof_tiles": {
-      "file": "textures/roof_tiles.png",
-      "size_px": [
-        1024,
-        1116
-      ],
-      "meters": [
-        4,
-        4.359
-      ]
-    },
     "cobblestone": {
       "file": "textures/cobblestone.png",
       "size_px": [
-        1024,
-        1179
+        83,
+        67
       ],
       "meters": [
-        3,
-        3.454
-      ]
-    },
-    "sidewalk_herringbone": {
-      "file": "textures/sidewalk_herringbone.png",
-      "size_px": [
-        1024,
-        1189
+        5.188,
+        4.188
       ],
-      "meters": [
-        3,
-        3.483
-      ]
+      "pixel": true
     },
     "tram_tracks": {
       "file": "textures/tram_tracks.png",
       "size_px": [
-        1024,
-        720
+        144,
+        66
       ],
       "meters": [
-        9,
-        6.328
-      ]
+        9.0,
+        4.125
+      ],
+      "pixel": true
+    },
+    "sidewalk_herringbone": {
+      "file": "textures/sidewalk_herringbone.png",
+      "size_px": [
+        99,
+        73
+      ],
+      "meters": [
+        6.188,
+        4.562
+      ],
+      "pixel": true
     },
     "canal_water": {
       "file": "textures/canal_water.png",
       "size_px": [
-        1024,
-        874
+        74,
+        97
       ],
       "meters": [
-        9,
-        7.682
-      ]
+        4.625,
+        6.062
+      ],
+      "pixel": true
+    },
+    "roof_tiles": {
+      "file": "textures/roof_tiles.png",
+      "size_px": [
+        120,
+        83
+      ],
+      "meters": [
+        5.0,
+        3.458
+      ],
+      "pixel": true
     }
   },
   "sprites": {
+    "rowboat": {
+      "file": "sprites/vehicles/rowboat.png",
+      "size_px": [
+        36,
+        61
+      ],
+      "size_m": [
+        2.361,
+        4.0
+      ],
+      "pixel": true
+    },
+    "tram": {
+      "file": "sprites/vehicles/tram.png",
+      "size_px": [
+        28,
+        120
+      ],
+      "size_m": [
+        5.133,
+        22.0
+      ],
+      "pixel": true
+    },
     "car_hatchback_green": {
       "file": "sprites/vehicles/car_hatchback_green.png",
       "size_px": [
@@ -69,17 +98,6 @@
         4.0
       ]
     },
-    "tram": {
-      "file": "sprites/vehicles/tram.png",
-      "size_px": [
-        345,
-        1408
-      ],
-      "size_m": [
-        5.391,
-        22.0
-      ]
-    },
     "houseboat": {
       "file": "sprites/vehicles/houseboat.png",
       "size_px": [
@@ -89,17 +107,6 @@
       "size_m": [
         5.531,
         18.0
-      ]
-    },
-    "rowboat": {
-      "file": "sprites/vehicles/rowboat.png",
-      "size_px": [
-        209,
-        256
-      ],
-      "size_m": [
-        3.266,
-        4.0
       ]
     },
     "bicycle": {
@@ -115,65 +122,75 @@
     }
   },
   "facades": {
-    "canal_house_step_gable_cafe": {
-      "file": "buildings/facades/canal_house_step_gable_cafe.png",
+    "canal_house_koffie": {
+      "file": "buildings/facades/canal_house_koffie.png",
       "size_px": [
-        453,
-        1139
+        91,
+        163
       ],
       "size_m": [
-        7.078,
-        17.797
+        5.688,
+        10.188
       ],
-      "eaves_m": 14.452
+      "wall_m": 5.625,
+      "eaves_m": 7.75,
+      "pixel": true
     },
-    "canal_house_neck_gable_brown": {
-      "file": "buildings/facades/canal_house_neck_gable_brown.png",
+    "canal_house_neck_brown": {
+      "file": "buildings/facades/canal_house_neck_brown.png",
       "size_px": [
-        411,
-        991
+        92,
+        163
       ],
       "size_m": [
-        6.422,
-        15.484
+        5.75,
+        10.188
       ],
-      "eaves_m": 11.607
+      "wall_m": 5.75,
+      "eaves_m": 7.5,
+      "pixel": true
     },
-    "canal_house_bell_gable_shutter": {
-      "file": "buildings/facades/canal_house_bell_gable_shutter.png",
+    "canal_house_bell_grey_vape": {
+      "file": "buildings/facades/canal_house_bell_grey_vape.png",
       "size_px": [
-        375,
-        944
+        91,
+        161
       ],
       "size_m": [
-        5.859,
-        14.75
+        5.688,
+        10.062
       ],
-      "eaves_m": 11.36
+      "wall_m": 5.688,
+      "eaves_m": 7.5,
+      "pixel": true
     },
-    "canal_house_spout_gable_red": {
-      "file": "buildings/facades/canal_house_spout_gable_red.png",
+    "canal_house_bell_orange": {
+      "file": "buildings/facades/canal_house_bell_orange.png",
       "size_px": [
-        387,
-        1041
+        88,
+        163
       ],
       "size_m": [
-        6.047,
-        16.266
+        5.5,
+        10.188
       ],
-      "eaves_m": 12.123
+      "wall_m": 5.5,
+      "eaves_m": 7.75,
+      "pixel": true
     },
-    "canal_house_neck_gable_grey": {
-      "file": "buildings/facades/canal_house_neck_gable_grey.png",
+    "canal_house_step_tan": {
+      "file": "buildings/facades/canal_house_step_tan.png",
       "size_px": [
-        426,
-        1132
+        94,
+        164
       ],
       "size_m": [
-        6.656,
-        17.688
+        5.875,
+        10.25
       ],
-      "eaves_m": 14.789
+      "wall_m": 5.75,
+      "eaves_m": 7.125,
+      "pixel": true
     }
   }
 }
