@@ -1,0 +1,22 @@
+# Godot
+.godot/
+.import/
+export.cfg
+export_presets.cfg
+*.translation
+mono_crash.*.json
+
+# Builds
+build/
+*.apk
+*.aab
+*.ipa
+
+# OS / editor
+.DS_Store
+.vscode/
+*.swp
+
+# Env / secrets
+.env
+*.keystore
