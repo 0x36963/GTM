@@ -124,7 +124,8 @@
       "size_m": [
         7.078,
         17.797
-      ]
+      ],
+      "eaves_m": 14.452
     },
     "canal_house_neck_gable_brown": {
       "file": "buildings/facades/canal_house_neck_gable_brown.png",
@@ -135,7 +136,8 @@
       "size_m": [
         6.422,
         15.484
-      ]
+      ],
+      "eaves_m": 11.607
     },
     "canal_house_bell_gable_shutter": {
       "file": "buildings/facades/canal_house_bell_gable_shutter.png",
@@ -146,7 +148,8 @@
       "size_m": [
         5.859,
         14.75
-      ]
+      ],
+      "eaves_m": 11.36
     },
     "canal_house_spout_gable_red": {
       "file": "buildings/facades/canal_house_spout_gable_red.png",
@@ -157,7 +160,8 @@
       "size_m": [
         6.047,
         16.266
-      ]
+      ],
+      "eaves_m": 12.123
     },
     "canal_house_neck_gable_grey": {
       "file": "buildings/facades/canal_house_neck_gable_grey.png",
@@ -168,7 +172,8 @@
       "size_m": [
         6.656,
         17.688
-      ]
+      ],
+      "eaves_m": 14.789
     }
   }
 }

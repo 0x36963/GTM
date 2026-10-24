@@ -219,14 +219,20 @@ def process_facades(spec: dict, ppm: int) -> dict:
         house = keep_largest_part(trim_edge_slivers(rgba[:, x0:x1 + 1]))
         rows = np.where(house[..., 3].max(axis=1) > 0)[0]
         house = house[rows[0]:]
+        # Eaves: the first row (from the top) where the wall spans the full
+        # width. Everything above it is the decorative gable.
+        coverage = (house[..., 3] > 128).mean(axis=1)
+        eaves_row = int(np.argmax(coverage >= 0.9))
         img = Image.fromarray(house)
         width_m = img.size[0] / px_per_m_src
         path = OUT / spec["out_dir"] / f"{name}.png"
         size = save_scaled(img, path, round(width_m * ppm), axis="w")
+        height_m = size[1] / ppm
         out[name] = {
             "file": str(path.relative_to(OUT)),
             "size_px": size,
-            "size_m": [round(size[0] / ppm, 3), round(size[1] / ppm, 3)],
+            "size_m": [round(size[0] / ppm, 3), round(height_m, 3)],
+            "eaves_m": round(height_m * (1 - eaves_row / house.shape[0]), 3),
         }
     return out
 

@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/test/canal_block_test.gd" id="1_test"]
+[ext_resource type="PackedScene" path="res://scenes/vehicles/car.tscn" id="2_car"]
+[ext_resource type="Script" path="res://scenes/camera/gta_camera.gd" id="3_cam"]
+
+[node name="CanalBlockTest" type="Node3D"]
+script = ExtResource("1_test")
+
+[node name="Car" parent="." instance=ExtResource("2_car")]
+
+[node name="GtaCamera" type="Camera3D" parent="."]
+script = ExtResource("3_cam")
+target_path = NodePath("../Car")

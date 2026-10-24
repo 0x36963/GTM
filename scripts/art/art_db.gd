@@ -1,0 +1,32 @@
+class_name ArtDb
+extends RefCounted
+## Reads assets/art_manifest.json, written by tools/art_pipeline/process_art.py.
+## Gives scenes each asset's texture and real-world size in metres.
+
+const MANIFEST_PATH := "res://assets/art_manifest.json"
+
+static var _data: Dictionary = {}
+
+
+static func data() -> Dictionary:
+	if _data.is_empty():
+		_data = JSON.parse_string(FileAccess.get_file_as_string(MANIFEST_PATH))
+	return _data
+
+
+static func entry(group: String, asset_name: String) -> Dictionary:
+	return data()[group][asset_name]
+
+
+static func texture(asset: Dictionary) -> Texture2D:
+	return load("res://assets/" + str(asset["file"])) as Texture2D
+
+
+## Size in metres. Sprites and facades use "size_m", textures "meters".
+static func meters(asset: Dictionary, key: String = "size_m") -> Vector2:
+	var m: Array = asset[key]
+	return Vector2(m[0], m[1])
+
+
+static func pixel_size() -> float:
+	return 1.0 / float(data()["pixels_per_meter"])

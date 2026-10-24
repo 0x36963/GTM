@@ -4,7 +4,7 @@ Guidance for Claude Code when working in this repository.
 
 ## Project
 
-**Grand Theft Mole**: a mobile (iOS/Android) online multiplayer social-deduction game. A heist crew in a GTA 2-style top-down pixel city has to find the undercover cops (Moles) among them. Round-based lobbies of 6–12 players, proximity voice.
+**Grand Theft Mole**: a mobile (iOS/Android) online multiplayer social-deduction game. A heist crew in a GTA 2-style top-down tiny Amsterdam has to find the undercover cops (Moles) among them. Round-based lobbies of 6–12 players, proximity voice.
 
 **[GDD.md](GDD.md) is the source of truth for game design.** Read the relevant section before implementing a feature. If an implementation decision changes the design, update GDD.md in the same change.
 
@@ -36,7 +36,7 @@ Guidance for Claude Code when working in this repository.
 
 - Raw generations go in `art/raw/`; processed, game-ready files go in `assets/`. Never hand-edit `assets/` files that the pipeline generates.
 - Raw file names: `<category>_<subject>_<NN>`, with category one of `tex_`, `sprites_`, `facades_` (references: `style_anchor.png`, `mood_*.png`). Rename Magnific downloads to this scheme.
-- Pipeline: add the raw file to `tools/art_pipeline/manifest.json`, then run `.venv/bin/python tools/art_pipeline/process_art.py` (setup: `python3 -m venv .venv && .venv/bin/pip install -r tools/art_pipeline/requirements.txt`). It writes `assets/art_manifest.json` with real-world sizes at 64 px per metre.
+- Pipeline: add the raw file to `tools/art_pipeline/manifest.json`, then run `.venv/bin/python tools/art_pipeline/process_art.py` (setup: `python3 -m venv .venv && touch .venv/.gdignore && .venv/bin/pip install -r tools/art_pipeline/requirements.txt`). It writes `assets/art_manifest.json` with real-world sizes at 64 px per metre.
 - Sprites face up (forward = up in the image). Use `rotate` in the manifest to fix ones that don't.
 - Ask for orthographic parts only (roofs from straight above, facades straight-on, seamless ground, top-down sprites). Don't attach the style anchor when generating sprites; the model copies it into the image.
 - Tall thin props (lamp posts, railings, bollards) and roofs are simple 3D geometry, not sprites. Roofs use the `roof_tiles` texture.
@@ -47,3 +47,10 @@ Guidance for Claude Code when working in this repository.
 ## Magnific MCP
 
 The Magnific MCP is connected, but the user's unlimited generations work only in the Magnific app, not through the MCP. Don't generate art through the MCP without asking, because it may cost credits. The user generates art in the app and drops the files into the project for processing.
+
+## Running the game
+
+- Godot is at `/Applications/Godot.app` (4.7.2). Binary: `/Applications/Godot.app/Contents/MacOS/Godot`.
+- Import after adding assets: `Godot --headless --path . --import`.
+- The current main scene is `scenes/test/canal_block_test.tscn`. It can save a screenshot and quit, which is how to check rendering without the user: `Godot --path . -- --screenshot=/abs/path.png --tilt=15 --height=40 --night` (pass each flag as a separate argument). macOS has no `timeout`; use `perl -e 'alarm 60; exec @ARGV' Godot ...`.
+- Commit `.import` and `.uid` files; `.godot/` is ignored.

@@ -1,0 +1,24 @@
+; Engine configuration file.
+; Keep this file as text so it diffs cleanly.
+
+config_version=5
+
+[application]
+
+config/name="Grand Theft Mole"
+run/main_scene="res://scenes/test/canal_block_test.tscn"
+config/features=PackedStringArray("4.7", "Mobile")
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/handheld/orientation=0
+
+[rendering]
+
+renderer/rendering_method="mobile"
+renderer/rendering_method.mobile="mobile"
+textures/vram_compression/import_etc2_astc=true
+anti_aliasing/quality/msaa_3d=1
