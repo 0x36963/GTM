@@ -92,7 +92,7 @@ Heat is the main tension: the crew has to move fast but quietly, and Moles try t
 - **Report** a body, or hit the **alarm at the hideout** (limited uses per player), to call a **sit-down**.
 - All players are teleported to a table at the hideout.
 - **Discussion** (proximity voice is off, and everyone at the table hears everyone), then **vote**. Skipping is allowed.
-- **Ejection:** the voted player gets **concrete shoes off the pier**, a short cinematic. Host setting: reveal or don't reveal their role.
+- **Ejection:** the voted player gets **concrete shoes into the canal** (or off the harbour pier), a short cinematic. Host setting: reveal or don't reveal their role.
 - Dead players become **ghosts**: they can still do jobs (crew ghosts) or sabotage (Mole ghosts), can't talk to the living, and have their own ghost voice channel.
 
 ## 8. Win conditions
@@ -132,12 +132,19 @@ Heat is the main tension: the crew has to move fast but quietly, and Moles try t
 
 ## 12. Map: v1
 
-- **One hand-made city, about 2×2 districts.** Kept small so players keep running into each other.
-  - **Downtown:** bank (heist target), city hall, rooftops.
-  - **Docks:** warehouse, pier (ejection spot), arms dealer alley.
-  - **Industrial:** power station, gas station, garage / respray.
-  - **Old town:** hideout (meeting table, alarm), parking lots, payphones.
+**Setting: a fictional Amsterdam-inspired city** (locked 2026-10-24; name TBD). Canals, arched brick bridges, narrow gabled canal houses, cobblestones, tram tracks, houseboats, piles of bicycles, warm canal lamps, red-light neon. Fictional, so the layout serves gameplay.
+
+- **One hand-made city, about 2×2 districts.** Kept small so players keep running into each other. Each district has a signature light colour for orientation and alibis.
+  - **Canal ring (old town):** hideout (meeting table, alarm), houseboats, bridges, cafés. *Warm amber.*
+  - **Red-light district:** neon alleys, bars, the arms dealer, narrow on-foot streets. *Pink/red neon.*
+  - **Harbour (docks):** shipyard warehouses covered in graffiti, cranes, containers, the pier, the drill pickup. *Cold white floodlights.*
+  - **Business district:** the bank (heist target) on a stone square, glass offices, city hall, wide avenues. *Cool blue.*
+  - Power station, gas station and garage/respray sit along the harbour/business edge.
+- **Canals are terrain:** cars that drive in sink (the occupant drowns unless they get out fast), and **bridges are choke points**.
+- **Trams** run on fixed lines: deadly traffic and moving cover.
+- **Bikes:** stealable, quiet (no Heat from riding), slower than cars, and they fit through alleys and over narrow bridges.
 - Road network with traffic, alleys for on-foot shortcuts, and a sewer network linking the manholes.
+- Stretch: stealable boats on the canals.
 - Lighting: night-time city. Vision is limited to a radius around you, lit by streetlights and headlights. This is the Among Us vision mechanic, and Blackout dims it further.
 
 ## 13. Progression and economy
@@ -154,10 +161,11 @@ Heat is the main tension: the crew has to move fast but quietly, and Moles try t
 - **Grime is put in shapes, not noise**: cracked asphalt, puddles, trash bags, graffiti, rusted shutters, stains, AC units, flickering signs.
 - **Modern setting**: hoodies, puffer jackets, balaclavas, sneakers, phones, e-scooters, delivery bikes, CCTV, vape shops, LED signs.
 - **Palette**: a muted, dirty concrete base; colour comes from light sources (sodium orange streetlights, pink/cyan/purple neon).
-- City setting/theme: still being explored (US vs Hong Kong vs Amsterdam vs a fictional mix).
+- City setting: fictional Amsterdam-inspired city (see §12).
 
 ### Camera: GTA 2 top-down
 - The camera looks **straight down with perspective**. Building walls lean outward from the screen centre (GTA 2 parallax). The camera zooms out with vehicle speed.
+- **Camera tilt is tunable.** Prototype 0° (pure GTA 2) against about 15–25° from vertical to show more of the canal-house facades.
 - **Characters and vehicles are single top-down sprites, rotated freely.** No directional sprite sheets.
 - **Identity comes from colour and silhouette**, because faces aren't visible in the world: each player has a strong signature jacket/hoodie colour, plus hats, hair and backpacks, plus name tags.
 - **Faces live in the UI**: HUD portrait, sit-down screen, voting cards, role reveal. This is where expressive character art goes.
