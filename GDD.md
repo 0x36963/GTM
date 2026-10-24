@@ -162,7 +162,9 @@ Heat is the main tension: the crew has to move fast but quietly, and Moles try t
 
 ### Style: pixel art (switched 2026-10-24, being explored)
 - **Pixel art via low-resolution rendering.** The 3D world renders into a small viewport (e.g. 320×180 or 480×270) that is upscaled with nearest filtering. Every object, including rotated sprites, leaning walls and lights, lands on one shared pixel grid, so AI-generated art never needs a perfect grid itself.
-- Source art should be authored as pixel art at roughly the on-screen pixel density, so it doesn't turn to noise when rendered small. Pixel density (pixels per metre on screen) is still to be chosen.
+- **Render size: about 360 lines** (640×360 on a 720p window, pixel size 3 on a 1080p phone), **camera height 24 m**. That shows about 25 m of street top to bottom, which is **~14.4 screen px per metre at street level**.
+- **Author art at:** 16 px/m for ground, vehicles, characters and facades; 24 px/m for roofs (they sit closer to the camera). Examples: car 64×32, character ~16×16 (exaggerated to ~1 m), cobble tile 64×64 = 4 m, canal house facade 96 px wide.
+- **Buildings must be squat:** with a 24 m camera, 15–18 m houses lean too far and fill the screen. Target eaves at 6–8 m and roof peaks at 9–10 m (2–3 floors plus gable). Madurodam scale, not real scale.
 - The earlier "Neon Grime" line-art assets in `assets/` are placeholders until pixel-art replacements exist.
 - Mood and content stay the same: grimy, modern, tiny Amsterdam at night.
 - **Grime is put in shapes, not noise**: cracked asphalt, puddles, trash bags, graffiti, rusted shutters, stains, AC units, flickering signs.

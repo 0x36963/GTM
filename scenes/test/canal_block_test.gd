@@ -27,6 +27,9 @@ const TRAM_X := 36.0
 const STREETS := [Vector2(-6.0, 6.0), Vector2(34.0, 44.0)]
 ## [front z, facing] per house row. Facing +1 means the facade faces +Z.
 const ROWS := [[-18.0, 1.0], [-42.0, -1.0], [18.0, -1.0], [42.0, 1.0]]
+## The world renders at about this many lines whatever the screen size,
+## using the nearest whole-number pixel size.
+const TARGET_LINES := 360
 const PLAYER_COLORS := [
 	Color(0.92, 0.16, 0.16), Color(0.98, 0.8, 0.1), Color(0.2, 0.75, 0.25),
 	Color(0.2, 0.45, 0.95), Color(0.62, 0.3, 0.88),
@@ -68,6 +71,8 @@ func _ready() -> void:
 	_build_hud()
 	_car.position = Vector3(-20.0, 0.0, -14.3)
 	_car.heading = -PI / 2.0
+	var screen_h := get_tree().root.get_visible_rect().size.y
+	_view.stretch_shrink = maxi(1, roundi(screen_h / TARGET_LINES))
 	_parse_args()
 	_set_night(_night)
 
