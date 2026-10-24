@@ -132,14 +132,18 @@ Heat is the main tension: the crew has to move fast but quietly, and Moles try t
 
 ## 12. Map: v1
 
-**Setting: a fictional Amsterdam-inspired city** (locked 2026-10-24; name TBD). Canals, arched brick bridges, narrow gabled canal houses, cobblestones, tram tracks, houseboats, piles of bicycles, warm canal lamps, red-light neon. Fictional, so the layout serves gameplay.
+**Setting: tiny Amsterdam** (locked 2026-10-24). Real Amsterdam landmarks and district names, with the geography **compressed and rearranged for gameplay**, Madurodam-style. Canals, arched brick bridges, narrow gabled canal houses, cobblestones, tram tracks, houseboats, piles of bicycles, warm canal lamps, red-light neon.
 
 - **One hand-made city, about 2×2 districts.** Kept small so players keep running into each other. Each district has a signature light colour for orientation and alibis.
-  - **Canal ring (old town):** hideout (meeting table, alarm), houseboats, bridges, cafés. *Warm amber.*
-  - **Red-light district:** neon alleys, bars, the arms dealer, narrow on-foot streets. *Pink/red neon.*
-  - **Harbour (docks):** shipyard warehouses covered in graffiti, cranes, containers, the pier, the drill pickup. *Cold white floodlights.*
-  - **Business district:** the bank (heist target) on a stone square, glass offices, city hall, wide avenues. *Cool blue.*
-  - Power station, gas station and garage/respray sit along the harbour/business edge.
+  - **Canal ring (Jordaan / Prinsengracht):** hideout on a **houseboat** (meeting table, alarm), the Magere Brug, cafés. *Warm amber.*
+  - **De Wallen (red-light district):** neon alleys along the Oudezijds canals, bars, the arms dealer, narrow on-foot streets. *Pink/red neon.*
+  - **NDSM wharf (harbour):** graffiti-covered shipyard halls, cranes, containers, the pier, the drill pickup. Across the IJ, reached by **ferry and one bridge**, which makes it a choke point. *Cold white floodlights.*
+  - **Centrum (Dam Square / Damrak / Centraal Station):** the bank (heist target) on a stone square, the Royal Palace, wide avenues, the tram hub. *Cool blue.*
+  - Power station, gas station and garage/respray sit along the harbour/IJ edge.
+- **Real-world rules:**
+  - No real brands or logos (beer, supermarkets, GVB tram livery). Use GTA-style parodies.
+  - The bank is fictional, even if its building is inspired by a real one.
+  - Canal rings are straightened into angled segments so the city can be built from modular pieces.
 - **Canals are terrain:** cars that drive in sink (the occupant drowns unless they get out fast), and **bridges are choke points**.
 - **Trams** run on fixed lines: deadly traffic and moving cover.
 - **Bikes:** stealable, quiet (no Heat from riding), slower than cars, and they fit through alleys and over narrow bridges.
@@ -161,7 +165,9 @@ Heat is the main tension: the crew has to move fast but quietly, and Moles try t
 - **Grime is put in shapes, not noise**: cracked asphalt, puddles, trash bags, graffiti, rusted shutters, stains, AC units, flickering signs.
 - **Modern setting**: hoodies, puffer jackets, balaclavas, sneakers, phones, e-scooters, delivery bikes, CCTV, vape shops, LED signs.
 - **Palette**: a muted, dirty concrete base; colour comes from light sources (sodium orange streetlights, pink/cyan/purple neon).
-- City setting: fictional Amsterdam-inspired city (see §12).
+- City setting: tiny Amsterdam (see §12).
+- **Style anchor:** `art/raw/style_anchor.png` (overcast, neutrally lit canal block). Use it as the reference image for all new generations. It defines outline weight, palette and level of detail, not the camera angle.
+- **AI generates flat parts, the engine makes the view.** Image models can't reliably produce GTA 2's perspective, so we never ask them to. Generate orthographic pieces (roofs from straight above, facades straight-on, seamless ground textures, top-down sprites). Assembling them in 3D produces the GTA 2 view.
 
 ### Camera: GTA 2 top-down
 - The camera looks **straight down with perspective**. Building walls lean outward from the screen centre (GTA 2 parallax). The camera zooms out with vehicle speed.
@@ -215,3 +221,4 @@ Anti-cheat principle: **clients never learn who the Moles are** unless they are 
 - Number of AI civilians/traffic a mobile device and server can handle.
 - Kill/sabotage cooldown tuning, Heat rates, round timer.
 - Name/trademark check: "Grand Theft Mole" closely echoes Take-Two's "Grand Theft Auto" mark.
+- Legal check on depicting real Amsterdam landmarks (Dutch freedom of panorama likely covers it).
