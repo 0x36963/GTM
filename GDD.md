@@ -166,7 +166,7 @@ Heat is the main tension: the crew has to move fast but quietly, and Moles try t
 - **Modern setting**: hoodies, puffer jackets, balaclavas, sneakers, phones, e-scooters, delivery bikes, CCTV, vape shops, LED signs.
 - **Palette**: a muted, dirty concrete base; colour comes from light sources (sodium orange streetlights, pink/cyan/purple neon).
 - City setting: tiny Amsterdam (see §12).
-- **Style anchor:** `art/raw/style_anchor.png` (overcast, neutrally lit canal block). Use it as the reference image for all new generations. It defines outline weight, palette and level of detail, not the camera angle.
+- **Style anchor:** `art/raw/style_anchor.png`, an overcast GTA 2-view Amsterdam canal and tram intersection. Use it as the reference image for all new generations. It defines outline weight, palette, level of detail, low-contrast roofs, continuous rows of narrow gabled canal houses, and player scale (tiny, about half a car length, bright hoodies). `art/raw/mood_night_street.png` is the target for night lighting.
 - **AI generates flat parts, the engine makes the view.** Image models can't reliably produce GTA 2's perspective, so we never ask them to. Generate orthographic pieces (roofs from straight above, facades straight-on, seamless ground textures, top-down sprites). Assembling them in 3D produces the GTA 2 view.
 
 ### Camera: GTA 2 top-down
