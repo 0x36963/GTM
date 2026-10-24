@@ -4,12 +4,11 @@ extends Node3D
 ## assets/art_manifest.json so new art shows up without editing the scene.
 ##
 ## Pixel art is drawn at full screen resolution with shaders/pixel_art.gdshader,
-## which keeps pixels crisp without shimmering as the camera moves. P switches
-## to rendering the world at ~360 lines instead, for comparison.
+## which keeps pixels crisp without shimmering as the camera moves.
 ##
-## Controls: WASD/arrows drive, Z/X zoom, N night, P low-res render.
+## Controls: WASD/arrows drive, N night.
 ## Screenshot mode:
-##   Godot --path . -- --screenshot=out.png [--pixel=4] [--height=40] [--night]
+##   Godot --path . -- --screenshot=out.png [--night]
 ##
 ## Layout (metres, -Z is north/up on screen): a canal runs east-west through
 ## the middle, crossed by a street and a tram line. Two back-to-back rows of
@@ -28,9 +27,6 @@ const TRAM_X := 36.0
 const STREETS := [Vector2(-6.0, 6.0), Vector2(34.0, 47.0)]
 ## [front z, facing] per house row. Facing +1 means the facade faces +Z.
 const ROWS := [[-18.0, 1.0], [-42.0, -1.0], [18.0, -1.0], [42.0, 1.0]]
-## The world renders at about this many lines whatever the screen size,
-## using the nearest whole-number pixel size.
-const TARGET_LINES := 360
 const PLAYER_COLORS := ["red", "yellow", "green", "blue", "purple"]
 const PARKED_CARS := ["car_red", "car_yellow", "car_white", "car_blue"]
 const WALK_SPEED := 1.4
@@ -48,19 +44,15 @@ var _roof_mat: ShaderMaterial
 var _iron_mat: StandardMaterial3D
 var _lamp_head_mat: StandardMaterial3D
 var _tram: PixelSprite
-var _pixel_lines := 0
 var _tram_dir := -1.0
 var _hud: Label
 var _shot_path := ""
 var _frames := 0
-var _keys_down: Dictionary = {}
 ## Placeholder players pacing along the sidewalk: [sprite, colour, start x, phase].
 var _walkers: Array = []
 var _walk_time := 0.0
 
 @onready var _car: Car = $Car
-@onready var _camera: GtaCamera = $GtaCamera
-@onready var _view: SubViewportContainer = get_parent().get_parent()
 
 
 func _ready() -> void:
@@ -77,10 +69,6 @@ func _ready() -> void:
 	_build_hud()
 	_car.position = Vector3(-20.0, 0.0, -14.3)
 	_car.heading = -PI / 2.0
-	# Full resolution by default; P switches to the old low-res render to compare.
-	var screen_h := get_tree().root.get_visible_rect().size.y
-	_pixel_lines = maxi(1, roundi(screen_h / TARGET_LINES))
-	_view.stretch_shrink = 1
 	_parse_args()
 	_set_night(_night)
 
@@ -90,16 +78,7 @@ func _process(delta: float) -> void:
 	_water_mat.set_shader_parameter("uv_offset", Vector2(_water_offset, 0.0))
 	_move_tram(delta)
 	_move_walkers(delta)
-
-	var zoom_input := float(Input.is_physical_key_pressed(KEY_X)) - float(Input.is_physical_key_pressed(KEY_Z))
-	_camera.base_height = clampf(_camera.base_height + zoom_input * 20.0 * delta, 15.0, 90.0)
-	if _just_pressed(KEY_N):
-		_set_night(not _night)
-	if _just_pressed(KEY_P):
-		_view.stretch_shrink = _pixel_lines if _view.stretch_shrink == 1 else 1
-	_hud.text = "WASD / arrows: drive    Z/X: height %d m    N: %s    P: %s" % [
-		roundi(_camera.base_height), "day" if _night else "night",
-		"full resolution" if _view.stretch_shrink > 1 else "low-res render"]
+	_hud.text = "WASD / arrows: drive    N: %s" % ("day" if _night else "night")
 
 	if _shot_path != "":
 		_frames += 1
@@ -107,13 +86,10 @@ func _process(delta: float) -> void:
 			_take_screenshot()
 
 
-## Polled instead of using input events, which the SubViewportContainer
-## doesn't forward for keys.
-func _just_pressed(key: Key) -> bool:
-	var down := Input.is_physical_key_pressed(key)
-	var was_down: bool = _keys_down.get(key, false)
-	_keys_down[key] = down
-	return down and not was_down
+func _unhandled_input(event: InputEvent) -> void:
+	var key := event as InputEventKey
+	if key and key.pressed and not key.echo and key.physical_keycode == KEY_N:
+		_set_night(not _night)
 
 
 # --- setup ----------------------------------------------------------------
@@ -124,18 +100,13 @@ func _parse_args() -> void:
 		match parts[0]:
 			"screenshot":
 				_shot_path = parts[1]
-			"pixel":
-				_view.stretch_shrink = int(parts[1])
-			"height":
-				_camera.base_height = float(parts[1])
 			"night":
 				_night = true
 
 
 func _take_screenshot() -> void:
 	await RenderingServer.frame_post_draw
-	# The root viewport holds the upscaled world plus the HUD.
-	get_tree().root.get_texture().get_image().save_png(_shot_path)
+	get_viewport().get_texture().get_image().save_png(_shot_path)
 	get_tree().quit()
 
 
@@ -460,9 +431,8 @@ func _build_bounds() -> void:
 
 
 func _build_hud() -> void:
-	# Added outside the low-res SubViewport so the text stays sharp.
 	var layer := CanvasLayer.new()
-	_view.add_child.call_deferred(layer)
+	add_child(layer)
 	_hud = Label.new()
 	_hud.position = Vector2(16.0, 12.0)
 	_hud.add_theme_font_size_override("font_size", 18)

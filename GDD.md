@@ -162,16 +162,15 @@ Heat is the main tension: the crew has to move fast but quietly, and Moles try t
 
 ### Style: pixel art (switched 2026-10-24, being explored)
 - **Pixel art drawn at full screen resolution** with a sharp-pixel shader (`shaders/pixel_art.gdshader`): texels stay crisp squares and only their edges blend across about one screen pixel. Rendering the whole world at low resolution was tried (2026-10-24) and dropped: with a moving perspective camera every edge snapped between pixels each frame and the image crawled.
-- **Scale reference: camera height 24 m**, showing about 25 m of street top to bottom (~14.4 px per metre on a 360-line screen; art is authored against that density).
+- **Camera height: 21 m** (locked 2026-10-24), showing about 22 m of street top to bottom. Art is authored at 16 px/m (roofs 24 px/m).
 - **Author art at:** 16 px/m for ground, vehicles, characters and facades; 24 px/m for roofs (they sit closer to the camera). Examples: car 64×32, character ~16×16 (exaggerated to ~1 m), cobble tile 64×64 = 4 m, canal house facade 96 px wide.
-- **Buildings must be squat:** with a 24 m camera, 15–18 m houses lean too far and fill the screen. Target eaves at 6–8 m and roof peaks at 9–10 m (2–3 floors plus gable). Madurodam scale, not real scale.
-- The earlier "Neon Grime" line-art assets in `assets/` are placeholders until pixel-art replacements exist.
+- **Buildings must be squat:** with a 21 m camera, 15–18 m houses lean too far and fill the screen. Target eaves at 6–8 m and roof peaks at 9–10 m (2–3 floors plus gable). Madurodam scale, not real scale.
 - Mood and content stay the same: grimy, modern, tiny Amsterdam at night.
 - **Grime is put in shapes, not noise**: cracked asphalt, puddles, trash bags, graffiti, rusted shutters, stains, AC units, flickering signs.
 - **Modern setting**: hoodies, puffer jackets, balaclavas, sneakers, phones, e-scooters, delivery bikes, CCTV, vape shops, LED signs.
 - **Palette**: a muted, dirty concrete base; colour comes from light sources (sodium orange streetlights, pink/cyan/purple neon).
 - City setting: tiny Amsterdam (see §12).
-- **Style anchor:** `art/raw/style_anchor.png`, an overcast GTA 2-view Amsterdam canal and tram intersection. Use it as the reference image for all new generations. It defines outline weight, palette, level of detail, low-contrast roofs, continuous rows of narrow gabled canal houses, and player scale (tiny, about half a car length, bright hoodies). `art/raw/mood_night_street.png` is the target for night lighting.
+- **Style reference:** `art/raw/mood_pixel_street.png` (attach it when generating textures and facades, not sprites). `art/raw/mood_night_street.png` is the target for night lighting.
 - **AI generates flat parts, the engine makes the view.** Image models can't reliably produce GTA 2's perspective, so we never ask them to. Generate orthographic pieces (roofs from straight above, facades straight-on, seamless ground textures, top-down sprites). Assembling them in 3D produces the GTA 2 view.
 
 ### Camera: GTA 2 top-down

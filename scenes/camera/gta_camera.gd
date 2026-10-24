@@ -4,7 +4,7 @@ extends Camera3D
 ## little with the target's speed and leads ahead of it.
 
 @export var target_path: NodePath
-@export var base_height := 24.0
+@export var base_height := 21.0
 @export var height_per_speed := 0.35
 @export var max_extra_height := 8.0
 @export var lead_seconds := 0.5

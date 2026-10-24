@@ -35,8 +35,8 @@ Guidance for Claude Code when working in this repository.
 ## Art pipeline notes
 
 - Raw generations go in `art/raw/`; processed, game-ready files go in `assets/`. Never hand-edit `assets/` files that the pipeline generates.
-- Raw file names: `<category>_<subject>_<NN>`, with category one of `tex_`, `sprites_`, `facades_` (references: `style_anchor.png`, `mood_*.png`; `mood_pixel_street.png` is the pixel-art style reference). Rename Magnific downloads to this scheme.
-- Pipeline: add the raw file to `tools/art_pipeline/manifest.json`, then run `.venv/bin/python tools/art_pipeline/process_art.py` (setup: `python3 -m venv .venv && touch .venv/.gdignore && .venv/bin/pip install -r tools/art_pipeline/requirements.txt`). It writes `assets/art_manifest.json` with real-world sizes at 64 px per metre.
+- Raw file names: `<category>_<subject>_<NN>`, with category one of `tex_`, `sprites_`, `facades_` (references: `mood_pixel_street.png` is the pixel-art style reference, `mood_night_street.png` the night lighting target). Rename Magnific downloads to this scheme.
+- Pipeline: add the raw file to `tools/art_pipeline/manifest.json`, then run `.venv/bin/python tools/art_pipeline/process_art.py` (setup: `python3 -m venv .venv && touch .venv/.gdignore && .venv/bin/pip install -r tools/art_pipeline/requirements.txt`). Each entry needs the source image's pixel block size (`pixel.block`, source pixels per art pixel). It writes `assets/art_manifest.json` with each asset's real-world size.
 - Sprites face up (forward = up in the image). Use `rotate` in the manifest to fix ones that don't.
 - Ask for orthographic parts only (roofs from straight above, facades straight-on, seamless ground, top-down sprites). Don't attach the style anchor when generating sprites; the model copies it into the image.
 - Tall thin props (lamp posts, railings, bollards) and roofs are simple 3D geometry, not sprites. Roofs use the `roof_tiles` texture.
@@ -52,5 +52,5 @@ The Magnific MCP is connected, but the user's unlimited generations work only in
 
 - Godot is at `/Applications/Godot.app` (4.7.2). Binary: `/Applications/Godot.app/Contents/MacOS/Godot`.
 - Import after adding assets: `Godot --headless --path . --import`.
-- The current main scene is `scenes/test/canal_block_test.tscn`. It can save a screenshot and quit, which is how to check rendering without the user: `Godot --path . -- --screenshot=/abs/path.png --pixel=4 --height=40 --night` (pass each flag as a separate argument). macOS has no `timeout`; use `perl -e 'alarm 60; exec @ARGV' Godot ...`.
+- The current main scene is `scenes/test/canal_block_test.tscn`. It can save a screenshot and quit, which is how to check rendering without the user: `Godot --path . -- --screenshot=/abs/path.png --night` (pass each flag as a separate argument). macOS has no `timeout`; use `perl -e 'alarm 60; exec @ARGV' Godot ...`.
 - Commit `.import` and `.uid` files; `.godot/` is ignored.
