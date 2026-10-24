@@ -26,14 +26,3 @@ static func texture(asset: Dictionary) -> Texture2D:
 static func meters(asset: Dictionary, key: String = "size_m") -> Vector2:
 	var m: Array = asset[key]
 	return Vector2(m[0], m[1])
-
-
-## Metres per texture pixel for a sprite or facade.
-static func pixel_size(asset: Dictionary) -> float:
-	var px: Array = asset["size_px"]
-	return meters(asset).x / float(px[0])
-
-
-## Pixel art is sampled with nearest filtering so its pixels stay square.
-static func filter(_asset: Dictionary = {}) -> BaseMaterial3D.TextureFilter:
-	return BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS

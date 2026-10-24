@@ -161,8 +161,8 @@ Heat is the main tension: the crew has to move fast but quietly, and Moles try t
 ## 14. Art direction
 
 ### Style: pixel art (switched 2026-10-24, being explored)
-- **Pixel art via low-resolution rendering.** The 3D world renders into a small viewport (e.g. 320×180 or 480×270) that is upscaled with nearest filtering. Every object, including rotated sprites, leaning walls and lights, lands on one shared pixel grid, so AI-generated art never needs a perfect grid itself.
-- **Render size: about 360 lines** (640×360 on a 720p window, pixel size 3 on a 1080p phone), **camera height 24 m**. That shows about 25 m of street top to bottom, which is **~14.4 screen px per metre at street level**.
+- **Pixel art drawn at full screen resolution** with a sharp-pixel shader (`shaders/pixel_art.gdshader`): texels stay crisp squares and only their edges blend across about one screen pixel. Rendering the whole world at low resolution was tried (2026-10-24) and dropped: with a moving perspective camera every edge snapped between pixels each frame and the image crawled.
+- **Scale reference: camera height 24 m**, showing about 25 m of street top to bottom (~14.4 px per metre on a 360-line screen; art is authored against that density).
 - **Author art at:** 16 px/m for ground, vehicles, characters and facades; 24 px/m for roofs (they sit closer to the camera). Examples: car 64×32, character ~16×16 (exaggerated to ~1 m), cobble tile 64×64 = 4 m, canal house facade 96 px wide.
 - **Buildings must be squat:** with a 24 m camera, 15–18 m houses lean too far and fill the screen. Target eaves at 6–8 m and roof peaks at 9–10 m (2–3 floors plus gable). Madurodam scale, not real scale.
 - The earlier "Neon Grime" line-art assets in `assets/` are placeholders until pixel-art replacements exist.

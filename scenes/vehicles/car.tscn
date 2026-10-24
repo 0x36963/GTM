@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scenes/vehicles/car.gd" id="1_car"]
-[ext_resource type="Texture2D" path="res://assets/sprites/vehicles/car_blue.png" id="2_tex"]
+[ext_resource type="Script" path="res://scripts/art/pixel_sprite.gd" id="2_sprite"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_car"]
 size = Vector3(2.2, 1.4, 3.8)
@@ -9,12 +9,9 @@ size = Vector3(2.2, 1.4, 3.8)
 [node name="Car" type="CharacterBody3D"]
 script = ExtResource("1_car")
 
-[node name="Sprite" type="Sprite3D" parent="."]
+[node name="Sprite" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
-axis = 1
-shaded = true
-alpha_cut = 2
-texture = ExtResource("2_tex")
+script = ExtResource("2_sprite")
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)

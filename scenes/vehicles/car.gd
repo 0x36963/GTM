@@ -15,13 +15,12 @@ var heading := 0.0
 
 var _headlights: Array[SpotLight3D] = []
 
-@onready var _sprite: Sprite3D = $Sprite
+@onready var _sprite: PixelSprite = $Sprite
 
 
 func _ready() -> void:
 	motion_mode = CharacterBody3D.MOTION_MODE_FLOATING
-	_sprite.pixel_size = ArtDb.pixel_size(ArtDb.entry("sprites", "car_blue"))
-	_sprite.texture_filter = ArtDb.filter()
+	_sprite.set_asset(ArtDb.entry("sprites", "car_blue"))
 	for side: float in [-0.6, 0.6]:
 		var light := SpotLight3D.new()
 		light.position = Vector3(side, 0.8, -1.9)

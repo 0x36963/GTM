@@ -3,10 +3,11 @@ extends Node3D
 ## seen through the GTA 2 camera. Everything is generated in code from
 ## assets/art_manifest.json so new art shows up without editing the scene.
 ##
-## The world renders into a low-resolution SubViewport that is scaled up with
-## nearest filtering, which gives the whole 3D scene one shared pixel grid.
+## Pixel art is drawn at full screen resolution with shaders/pixel_art.gdshader,
+## which keeps pixels crisp without shimmering as the camera moves. P switches
+## to rendering the world at ~360 lines instead, for comparison.
 ##
-## Controls: WASD/arrows drive, Z/X zoom, N night.
+## Controls: WASD/arrows drive, Z/X zoom, N night, P low-res render.
 ## Screenshot mode:
 ##   Godot --path . -- --screenshot=out.png [--pixel=4] [--height=40] [--night]
 ##
@@ -41,11 +42,13 @@ var _night_lights: Array[Light3D] = []
 var _wall_colors: Dictionary = {}
 var _env: Environment
 var _sun: DirectionalLight3D
-var _water_mat: StandardMaterial3D
-var _roof_mat: StandardMaterial3D
+var _water_mat: ShaderMaterial
+var _water_offset := 0.0
+var _roof_mat: ShaderMaterial
 var _iron_mat: StandardMaterial3D
 var _lamp_head_mat: StandardMaterial3D
-var _tram: Sprite3D
+var _tram: PixelSprite
+var _pixel_lines := 0
 var _tram_dir := -1.0
 var _hud: Label
 var _shot_path := ""
@@ -74,14 +77,17 @@ func _ready() -> void:
 	_build_hud()
 	_car.position = Vector3(-20.0, 0.0, -14.3)
 	_car.heading = -PI / 2.0
+	# Full resolution by default; P switches to the old low-res render to compare.
 	var screen_h := get_tree().root.get_visible_rect().size.y
-	_view.stretch_shrink = maxi(1, roundi(screen_h / TARGET_LINES))
+	_pixel_lines = maxi(1, roundi(screen_h / TARGET_LINES))
+	_view.stretch_shrink = 1
 	_parse_args()
 	_set_night(_night)
 
 
 func _process(delta: float) -> void:
-	_water_mat.uv1_offset.x += delta * 0.01
+	_water_offset += delta * 0.01
+	_water_mat.set_shader_parameter("uv_offset", Vector2(_water_offset, 0.0))
 	_move_tram(delta)
 	_move_walkers(delta)
 
@@ -89,8 +95,11 @@ func _process(delta: float) -> void:
 	_camera.base_height = clampf(_camera.base_height + zoom_input * 20.0 * delta, 15.0, 90.0)
 	if _just_pressed(KEY_N):
 		_set_night(not _night)
-	_hud.text = "WASD / arrows: drive    Z/X: height %d m    N: %s" % [
-		roundi(_camera.base_height), "day" if _night else "night"]
+	if _just_pressed(KEY_P):
+		_view.stretch_shrink = _pixel_lines if _view.stretch_shrink == 1 else 1
+	_hud.text = "WASD / arrows: drive    Z/X: height %d m    N: %s    P: %s" % [
+		roundi(_camera.base_height), "day" if _night else "night",
+		"full resolution" if _view.stretch_shrink > 1 else "low-res render"]
 
 	if _shot_path != "":
 		_frames += 1
@@ -167,9 +176,7 @@ func _build_ground() -> void:
 	# The track texture's rails already run north-south (along V).
 	var tracks := ArtDb.entry("textures", "tram_tracks")
 	var tile := ArtDb.meters(tracks, "meters")
-	var mat := StandardMaterial3D.new()
-	mat.albedo_texture = ArtDb.texture(tracks)
-	mat.texture_filter = ArtDb.filter()
+	var mat := PixelMaterials.mesh_uv(ArtDb.texture(tracks))
 	var z := -Z_EXTENT + 1.5
 	while z + tile.y <= Z_EXTENT - 1.5:
 		_add_plane(Vector2(tile.x, tile.y), Vector3(TRAM_X + tile.x / 2.0, 0.05, z + tile.y / 2.0), mat)
@@ -216,10 +223,7 @@ func _build_houses() -> void:
 	var names: Array = facades.keys()
 	var sidewalk := _world_mat("sidewalk_herringbone")
 	var roof_entry := ArtDb.entry("textures", "roof_tiles")
-	_roof_mat = StandardMaterial3D.new()
-	_roof_mat.albedo_texture = ArtDb.texture(roof_entry)
-	_roof_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-	_roof_mat.texture_filter = ArtDb.filter()
+	_roof_mat = PixelMaterials.mesh_uv(ArtDb.texture(roof_entry))
 
 	for row: Array in ROWS:
 		var z_front: float = row[0]
@@ -259,7 +263,7 @@ func _add_house(facade: Dictionary, x0: float, w: float, z_front: float, facing:
 	quad.size = size
 	var front := MeshInstance3D.new()
 	front.mesh = quad
-	front.material_override = _facade_mat(tex)
+	front.material_override = PixelMaterials.mesh_uv(tex)
 	front.position = Vector3(center.x, size.y / 2.0, z_front + facing * 0.03)
 	if facing < 0.0:
 		front.rotation.y = PI
@@ -300,15 +304,6 @@ func _roof_mesh(w: float, depth: float, eaves: float, peak: float, end_mat: Mate
 			ends.add_vertex(p)
 	ends.set_material(end_mat)
 	return ends.commit(mesh)
-
-
-func _facade_mat(tex: Texture2D) -> StandardMaterial3D:
-	var mat := StandardMaterial3D.new()
-	mat.albedo_texture = tex
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
-	mat.alpha_scissor_threshold = 0.5
-	mat.texture_filter = ArtDb.filter()
-	return mat
 
 
 ## Side and back walls use the facade's brick colour, sampled from the strip
@@ -439,7 +434,7 @@ func _build_players() -> void:
 func _move_walkers(delta: float) -> void:
 	_walk_time += delta
 	for w: Array in _walkers:
-		var sprite: Sprite3D = w[0]
+		var sprite: PixelSprite = w[0]
 		var t: float = _walk_time + w[3]
 		# Walk 3 m east, then 3 m back, swinging arms on alternate steps.
 		var span := 3.0 / WALK_SPEED
@@ -451,8 +446,7 @@ func _move_walkers(delta: float) -> void:
 		var step := int(t / STEP_TIME) % 2
 		var frame := "player_walk_" if step == 0 else "player_stand_"
 		var asset := ArtDb.entry("sprites", frame + str(w[1]))
-		sprite.texture = ArtDb.texture(asset)
-		sprite.pixel_size = ArtDb.pixel_size(asset)
+		sprite.set_asset(asset)
 		sprite.flip_h = int(t / (STEP_TIME * 2.0)) % 2 == 1
 
 
@@ -493,16 +487,9 @@ func _segments(a: float, b: float, margin: float) -> Array[Vector2]:
 
 
 ## Material that tiles a texture in world space at its real-world size.
-func _world_mat(tex_name: String) -> StandardMaterial3D:
+func _world_mat(tex_name: String) -> ShaderMaterial:
 	var asset := ArtDb.entry("textures", tex_name)
-	var m := ArtDb.meters(asset, "meters")
-	var mat := StandardMaterial3D.new()
-	mat.albedo_texture = ArtDb.texture(asset)
-	mat.uv1_triplanar = true
-	mat.uv1_world_triplanar = true
-	mat.uv1_scale = Vector3(1.0 / m.x, 1.0 / m.y, 1.0 / m.y)
-	mat.texture_filter = ArtDb.filter()
-	return mat
+	return PixelMaterials.world(ArtDb.texture(asset), ArtDb.meters(asset, "meters"))
 
 
 func _color_mat(color: Color) -> StandardMaterial3D:
@@ -511,14 +498,9 @@ func _color_mat(color: Color) -> StandardMaterial3D:
 	return mat
 
 
-func _add_sprite(sprite_name: String, pos: Vector3, yaw: float) -> Sprite3D:
-	var sprite := Sprite3D.new()
-	sprite.texture = ArtDb.texture(ArtDb.entry("sprites", sprite_name))
-	sprite.pixel_size = ArtDb.pixel_size(ArtDb.entry("sprites", sprite_name))
-	sprite.axis = Vector3.AXIS_Y
-	sprite.shaded = true
-	sprite.alpha_cut = SpriteBase3D.ALPHA_CUT_OPAQUE_PREPASS
-	sprite.texture_filter = ArtDb.filter()
+func _add_sprite(sprite_name: String, pos: Vector3, yaw: float) -> PixelSprite:
+	var sprite := PixelSprite.new()
+	sprite.set_asset(ArtDb.entry("sprites", sprite_name))
 	sprite.position = pos
 	sprite.rotation.y = yaw
 	add_child(sprite)

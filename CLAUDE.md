@@ -14,7 +14,7 @@ Guidance for Claude Code when working in this repository.
 - **Backend:** Nakama (auth, matchmaking, wallet, storage), run locally via Docker Compose.
 - **Game server:** server-authoritative. Headless Godot build sharing gameplay code with the client (not yet final, see GDD §15/§17).
 - **Rendering:** 3D world with 2D art, GTA 2 style. Box buildings with roof/wall textures, flat top-down sprites for characters and vehicles, a perspective camera looking straight down. Gameplay logic is 2D on the ground plane (x/y); only rendering is 3D.
-- **Art:** pixel art via low-resolution rendering (GDD §14; current line-art assets are placeholders), generated with Nano Banana Pro via Magnific by the user, then processed by our pipeline scripts.
+- **Art:** pixel art drawn at full resolution with `shaders/pixel_art.gdshader` (GDD §14). Use `PixelMaterials` / `PixelSprite` for anything showing pixel art, never nearest filtering or a low-res render. Generated with Nano Banana Pro via Magnific by the user, then processed by our pipeline scripts.
 
 ## Rules that matter
 
