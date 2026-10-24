@@ -23,3 +23,7 @@ build/
 
 # Raw art: untracked until git-lfs is set up
 art/raw/
+
+# Python
+.venv/
+__pycache__/

@@ -34,7 +34,12 @@ Guidance for Claude Code when working in this repository.
 
 ## Art pipeline notes
 
-- Raw generations go in `art/raw/`; processed, game-ready files go in `assets/`.
+- Raw generations go in `art/raw/`; processed, game-ready files go in `assets/`. Never hand-edit `assets/` files that the pipeline generates.
+- Raw file names: `<category>_<subject>_<NN>`, with category one of `tex_`, `sprites_`, `facades_` (references: `style_anchor.png`, `mood_*.png`). Rename Magnific downloads to this scheme.
+- Pipeline: add the raw file to `tools/art_pipeline/manifest.json`, then run `.venv/bin/python tools/art_pipeline/process_art.py` (setup: `python3 -m venv .venv && .venv/bin/pip install -r tools/art_pipeline/requirements.txt`). It writes `assets/art_manifest.json` with real-world sizes at 64 px per metre.
+- Sprites face up (forward = up in the image). Use `rotate` in the manifest to fix ones that don't.
+- Ask for orthographic parts only (roofs from straight above, facades straight-on, seamless ground, top-down sprites). Don't attach the style anchor when generating sprites; the model copies it into the image.
+- Tall thin props (lamp posts, railings, bollards) and roofs are simple 3D geometry, not sprites. Roofs use the `roof_tiles` texture.
 - Characters and vehicles are single top-down sprites rotated in-engine, so there are no directional sheets. Characters use a cutout rig (separate body parts).
 - World art must be neutrally lit; mood lighting is done at runtime. Emissive parts (signs, windows, headlights) are separate masks.
 - Player identity comes from colour and silhouette (faces aren't visible from above). Faces appear only in UI portraits.
