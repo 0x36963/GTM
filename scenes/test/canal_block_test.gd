@@ -6,7 +6,7 @@ extends Node3D
 ## The world renders into a low-resolution SubViewport that is scaled up with
 ## nearest filtering, which gives the whole 3D scene one shared pixel grid.
 ##
-## Controls: WASD/arrows drive, Z/X zoom, [ ] pixel size, N night.
+## Controls: WASD/arrows drive, Z/X zoom, N night.
 ## Screenshot mode:
 ##   Godot --path . -- --screenshot=out.png [--pixel=4] [--height=40] [--night]
 ##
@@ -30,10 +30,10 @@ const ROWS := [[-18.0, 1.0], [-42.0, -1.0], [18.0, -1.0], [42.0, 1.0]]
 ## The world renders at about this many lines whatever the screen size,
 ## using the nearest whole-number pixel size.
 const TARGET_LINES := 360
-const PLAYER_COLORS := [
-	Color(0.92, 0.16, 0.16), Color(0.98, 0.8, 0.1), Color(0.2, 0.75, 0.25),
-	Color(0.2, 0.45, 0.95), Color(0.62, 0.3, 0.88),
-]
+const PLAYER_COLORS := ["red", "yellow", "green", "blue", "purple"]
+const PARKED_CARS := ["car_red", "car_yellow", "car_white", "car_blue"]
+const WALK_SPEED := 1.4
+const STEP_TIME := 0.25
 
 var _rng := RandomNumberGenerator.new()
 var _night := false
@@ -51,6 +51,9 @@ var _hud: Label
 var _shot_path := ""
 var _frames := 0
 var _keys_down: Dictionary = {}
+## Placeholder players pacing along the sidewalk: [sprite, colour, start x, phase].
+var _walkers: Array = []
+var _walk_time := 0.0
 
 @onready var _car: Car = $Car
 @onready var _camera: GtaCamera = $GtaCamera
@@ -80,19 +83,14 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_water_mat.uv1_offset.x += delta * 0.01
 	_move_tram(delta)
+	_move_walkers(delta)
 
 	var zoom_input := float(Input.is_physical_key_pressed(KEY_X)) - float(Input.is_physical_key_pressed(KEY_Z))
 	_camera.base_height = clampf(_camera.base_height + zoom_input * 20.0 * delta, 15.0, 90.0)
 	if _just_pressed(KEY_N):
 		_set_night(not _night)
-	if _just_pressed(KEY_BRACKETLEFT):
-		_view.stretch_shrink = maxi(_view.stretch_shrink - 1, 1)
-	if _just_pressed(KEY_BRACKETRIGHT):
-		_view.stretch_shrink = mini(_view.stretch_shrink + 1, 8)
-	var res := _view.get_child(0) as SubViewport
-	_hud.text = "WASD / arrows: drive    Z/X: height %d m    [ ]: pixels %d (%d×%d)    N: %s" % [
-		roundi(_camera.base_height), _view.stretch_shrink, res.size.x, res.size.y,
-		"day" if _night else "night"]
+	_hud.text = "WASD / arrows: drive    Z/X: height %d m    N: %s" % [
+		roundi(_camera.base_height), "day" if _night else "night"]
 
 	if _shot_path != "":
 		_frames += 1
@@ -410,9 +408,8 @@ func _add_bikes(x: float, side: float) -> void:
 
 
 func _add_parked_car(pos: Vector3) -> void:
-	var sprite := _add_sprite("car_hatchback_green", pos + Vector3(0.0, 0.06, 0.0), PI / 2.0 * signf(pos.z))
-	var tints := [Color.WHITE, Color(1.3, 0.75, 0.7), Color(0.75, 0.85, 1.4), Color(1.2, 1.15, 0.7)]
-	sprite.modulate = tints[_rng.randi() % tints.size()]
+	var car: String = PARKED_CARS[_rng.randi() % PARKED_CARS.size()]
+	_add_sprite(car, pos + Vector3(0.0, 0.06, 0.0), PI / 2.0 * signf(pos.z))
 	_add_static_box(Vector3(3.8, 2.0, 2.0), pos + Vector3(0.0, 1.0, 0.0))
 
 
@@ -430,16 +427,33 @@ func _move_tram(delta: float) -> void:
 	_tram.rotation.y = 0.0 if _tram_dir < 0.0 else PI
 
 
-## Placeholder players: coloured discs until the character rig exists.
+## Placeholder players: one per colour, pacing back and forth on the sidewalk.
 func _build_players() -> void:
 	for i in PLAYER_COLORS.size():
-		var mat := _color_mat(PLAYER_COLORS[i])
-		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		var body := CylinderMesh.new()
-		body.top_radius = 0.38
-		body.bottom_radius = 0.38
-		body.height = 1.7
-		_add_mesh(body, Vector3(-26.0 + i * 3.1, 0.85, -16.6 + (i % 2) * 0.8), mat)
+		var color: String = PLAYER_COLORS[i]
+		var start := Vector3(-28.0 + i * 3.4, 0.08, -16.4 + (i % 2) * 0.9)
+		var sprite := _add_sprite("player_stand_" + color, start, 0.0)
+		_walkers.append([sprite, color, start.x, i * 1.3])
+
+
+func _move_walkers(delta: float) -> void:
+	_walk_time += delta
+	for w: Array in _walkers:
+		var sprite: Sprite3D = w[0]
+		var t: float = _walk_time + w[3]
+		# Walk 3 m east, then 3 m back, swinging arms on alternate steps.
+		var span := 3.0 / WALK_SPEED
+		var leg := fmod(t, span * 2.0)
+		var east := leg < span
+		var along := leg if east else span * 2.0 - leg
+		sprite.position.x = w[2] + along * WALK_SPEED
+		sprite.rotation.y = -PI / 2.0 if east else PI / 2.0
+		var step := int(t / STEP_TIME) % 2
+		var frame := "player_walk_" if step == 0 else "player_stand_"
+		var asset := ArtDb.entry("sprites", frame + str(w[1]))
+		sprite.texture = ArtDb.texture(asset)
+		sprite.pixel_size = ArtDb.pixel_size(asset)
+		sprite.flip_h = int(t / (STEP_TIME * 2.0)) % 2 == 1
 
 
 func _build_bounds() -> void:

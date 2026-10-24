@@ -4,12 +4,12 @@
     "cobblestone": {
       "file": "textures/cobblestone.png",
       "size_px": [
-        83,
-        67
+        120,
+        76
       ],
       "meters": [
-        5.188,
-        4.188
+        7.5,
+        4.75
       ],
       "pixel": true
     },
@@ -87,38 +87,257 @@
       ],
       "pixel": true
     },
-    "car_hatchback_green": {
-      "file": "sprites/vehicles/car_hatchback_green.png",
+    "car_blue": {
+      "file": "sprites/vehicles/car_blue.png",
       "size_px": [
-        173,
-        256
+        57,
+        107
       ],
       "size_m": [
-        2.703,
+        2.131,
         4.0
-      ]
+      ],
+      "pixel": true
     },
-    "houseboat": {
-      "file": "sprites/vehicles/houseboat.png",
+    "car_red": {
+      "file": "sprites/vehicles/car_red.png",
       "size_px": [
-        354,
-        1152
+        57,
+        107
       ],
       "size_m": [
-        5.531,
-        18.0
-      ]
+        2.131,
+        4.0
+      ],
+      "pixel": true
+    },
+    "car_yellow": {
+      "file": "sprites/vehicles/car_yellow.png",
+      "size_px": [
+        57,
+        107
+      ],
+      "size_m": [
+        2.131,
+        4.0
+      ],
+      "pixel": true
+    },
+    "car_white": {
+      "file": "sprites/vehicles/car_white.png",
+      "size_px": [
+        57,
+        107
+      ],
+      "size_m": [
+        2.131,
+        4.0
+      ],
+      "pixel": true
     },
     "bicycle": {
       "file": "sprites/vehicles/bicycle.png",
       "size_px": [
-        50,
-        115
+        32,
+        82
       ],
       "size_m": [
-        0.781,
-        1.797
-      ]
+        0.702,
+        1.8
+      ],
+      "pixel": true
+    },
+    "houseboat": {
+      "file": "sprites/vehicles/houseboat.png",
+      "size_px": [
+        65,
+        132
+      ],
+      "size_m": [
+        6.894,
+        14.0
+      ],
+      "pixel": true
+    },
+    "player_stand_red": {
+      "file": "sprites/characters/player_stand_red.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_m": [
+        0.95,
+        0.95
+      ],
+      "pixel": true
+    },
+    "player_stand_yellow": {
+      "file": "sprites/characters/player_stand_yellow.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_m": [
+        0.95,
+        0.95
+      ],
+      "pixel": true
+    },
+    "player_stand_green": {
+      "file": "sprites/characters/player_stand_green.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_m": [
+        0.95,
+        0.95
+      ],
+      "pixel": true
+    },
+    "player_stand_blue": {
+      "file": "sprites/characters/player_stand_blue.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_m": [
+        0.95,
+        0.95
+      ],
+      "pixel": true
+    },
+    "player_stand_purple": {
+      "file": "sprites/characters/player_stand_purple.png",
+      "size_px": [
+        16,
+        16
+      ],
+      "size_m": [
+        0.95,
+        0.95
+      ],
+      "pixel": true
+    },
+    "player_walk_red": {
+      "file": "sprites/characters/player_walk_red.png",
+      "size_px": [
+        16,
+        18
+      ],
+      "size_m": [
+        0.933,
+        1.05
+      ],
+      "pixel": true
+    },
+    "player_walk_yellow": {
+      "file": "sprites/characters/player_walk_yellow.png",
+      "size_px": [
+        16,
+        18
+      ],
+      "size_m": [
+        0.933,
+        1.05
+      ],
+      "pixel": true
+    },
+    "player_walk_green": {
+      "file": "sprites/characters/player_walk_green.png",
+      "size_px": [
+        16,
+        18
+      ],
+      "size_m": [
+        0.933,
+        1.05
+      ],
+      "pixel": true
+    },
+    "player_walk_blue": {
+      "file": "sprites/characters/player_walk_blue.png",
+      "size_px": [
+        16,
+        18
+      ],
+      "size_m": [
+        0.933,
+        1.05
+      ],
+      "pixel": true
+    },
+    "player_walk_purple": {
+      "file": "sprites/characters/player_walk_purple.png",
+      "size_px": [
+        16,
+        18
+      ],
+      "size_m": [
+        0.933,
+        1.05
+      ],
+      "pixel": true
+    },
+    "player_down_red": {
+      "file": "sprites/characters/player_down_red.png",
+      "size_px": [
+        20,
+        19
+      ],
+      "size_m": [
+        1.211,
+        1.15
+      ],
+      "pixel": true
+    },
+    "player_down_yellow": {
+      "file": "sprites/characters/player_down_yellow.png",
+      "size_px": [
+        20,
+        19
+      ],
+      "size_m": [
+        1.211,
+        1.15
+      ],
+      "pixel": true
+    },
+    "player_down_green": {
+      "file": "sprites/characters/player_down_green.png",
+      "size_px": [
+        20,
+        19
+      ],
+      "size_m": [
+        1.211,
+        1.15
+      ],
+      "pixel": true
+    },
+    "player_down_blue": {
+      "file": "sprites/characters/player_down_blue.png",
+      "size_px": [
+        20,
+        19
+      ],
+      "size_m": [
+        1.211,
+        1.15
+      ],
+      "pixel": true
+    },
+    "player_down_purple": {
+      "file": "sprites/characters/player_down_purple.png",
+      "size_px": [
+        20,
+        19
+      ],
+      "size_m": [
+        1.211,
+        1.15
+      ],
+      "pixel": true
     }
   },
   "facades": {

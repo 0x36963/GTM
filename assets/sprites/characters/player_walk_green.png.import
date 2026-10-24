@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d2r5q1rkofjc5"
-path="res://.godot/imported/car_hatchback_green.png-e3202c8294517c953b0174719ab3ce23.ctex"
+uid="uid://ciw0btcsi8dgu"
+path="res://.godot/imported/player_walk_green.png-7f99cc39064d69cdef387eb913fed065.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/vehicles/car_hatchback_green.png"
-dest_files=["res://.godot/imported/car_hatchback_green.png-e3202c8294517c953b0174719ab3ce23.ctex"]
+source_file="res://assets/sprites/characters/player_walk_green.png"
+dest_files=["res://.godot/imported/player_walk_green.png-7f99cc39064d69cdef387eb913fed065.ctex"]
 
 [params]
 

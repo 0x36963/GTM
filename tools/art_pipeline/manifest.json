@@ -3,36 +3,70 @@
   "textures": [
     {
       "name": "cobblestone",
-      "source": "tex_ground_px_01.png",
-      "crop": [528, 23, 1353, 742],
-      "pixel": {"block": 5.733, "ppm": 16, "colors": 16},
+      "source": "tex_cobblestone_small_px_01.png",
+      "pixel": {
+        "block": 11.47,
+        "ppm": 16,
+        "colors": 12
+      },
       "seamless": "xy"
     },
     {
       "name": "tram_tracks",
       "source": "tex_ground_px_01.png",
-      "crop": [1399, 23, 2224, 742],
-      "pixel": {"block": 5.733, "ppm": 16, "colors": 16},
+      "crop": [
+        1399,
+        23,
+        2224,
+        742
+      ],
+      "pixel": {
+        "block": 5.733,
+        "ppm": 16,
+        "colors": 16
+      },
       "seamless": "y"
     },
     {
       "name": "sidewalk_herringbone",
       "source": "tex_ground_px_01.png",
-      "crop": [528, 792, 1353, 1511],
-      "pixel": {"block": 5.733, "ppm": 16, "colors": 16},
+      "crop": [
+        528,
+        792,
+        1353,
+        1511
+      ],
+      "pixel": {
+        "block": 5.733,
+        "ppm": 16,
+        "colors": 16
+      },
       "seamless": "xy"
     },
     {
       "name": "canal_water",
       "source": "tex_ground_px_01.png",
-      "crop": [1399, 792, 2224, 1511],
-      "pixel": {"block": 5.733, "ppm": 16, "colors": 8},
+      "crop": [
+        1399,
+        792,
+        2224,
+        1511
+      ],
+      "pixel": {
+        "block": 5.733,
+        "ppm": 16,
+        "colors": 8
+      },
       "seamless": "xy"
     },
     {
       "name": "roof_tiles",
       "source": "tex_roof_tiles_px_01.png",
-      "pixel": {"block": 11.47, "ppm": 24, "colors": 12},
+      "pixel": {
+        "block": 11.47,
+        "ppm": 24,
+        "colors": 12
+      },
       "seamless": "xy"
     }
   ],
@@ -40,34 +74,143 @@
     {
       "source": "sprites_vehicles_px_01.png",
       "out_dir": "sprites/vehicles",
-      "pixel": {"block": 11.47, "colors": 24},
+      "pixel": {
+        "block": 11.47,
+        "colors": 24
+      },
       "sprites": [
-        {"skip": true, "note": "car, side view"},
-        {"skip": true, "note": "houseboat, angled view"},
-        {"skip": true, "note": "bicycle, side view"},
-        {"name": "rowboat", "length_m": 4.0, "rotate": 90},
-        {"name": "tram", "length_m": 22.0, "rotate": 180}
+        {
+          "skip": true,
+          "note": "car, side view"
+        },
+        {
+          "skip": true,
+          "note": "houseboat, angled view"
+        },
+        {
+          "skip": true,
+          "note": "bicycle, side view"
+        },
+        {
+          "name": "rowboat",
+          "length_m": 4.0,
+          "rotate": 90
+        },
+        {
+          "name": "tram",
+          "length_m": 22.0,
+          "rotate": 180
+        }
       ]
     },
     {
-      "source": "sprites_vehicles_01.png",
+      "source": "sprites_cars_px_01.png",
       "out_dir": "sprites/vehicles",
-      "note": "line-art placeholders until pixel versions exist",
+      "pixel": {
+        "block": 10.75,
+        "colors": 24,
+        "open": true
+      },
       "sprites": [
-        {"name": "car_hatchback_green", "length_m": 4.0, "rotate": 180},
-        {"skip": true, "note": "tram, replaced by pixel version"},
-        {"name": "houseboat", "length_m": 18.0},
-        {"skip": true, "note": "rowboat, replaced by pixel version"},
-        {"skip": true, "note": "side-view bicycle, wrong angle"}
+        {
+          "name": "car_blue",
+          "length_m": 4.0,
+          "rotate": 180
+        },
+        {
+          "name": "car_red",
+          "length_m": 4.0,
+          "rotate": 180
+        },
+        {
+          "name": "car_yellow",
+          "length_m": 4.0,
+          "rotate": 180
+        },
+        {
+          "name": "car_white",
+          "length_m": 4.0,
+          "rotate": 180
+        }
       ]
     },
     {
-      "source": "sprites_bicycle_01.png",
+      "source": "sprites_bicycle_px_01.png",
       "out_dir": "sprites/vehicles",
-      "note": "line-art placeholder",
-      "fill_holes": true,
+      "pixel": {
+        "block": 17.3,
+        "colors": 8
+      },
       "sprites": [
-        {"name": "bicycle", "length_m": 1.8}
+        {
+          "name": "bicycle",
+          "length_m": 1.8
+        }
+      ]
+    },
+    {
+      "source": "sprites_houseboat_px_01.png",
+      "crop": [
+        0,
+        0,
+        1715,
+        1536
+      ],
+      "note": "crop removes the jetty on the right",
+      "out_dir": "sprites/vehicles",
+      "pixel": {
+        "block": 11.47,
+        "colors": 24
+      },
+      "sprites": [
+        {
+          "name": "houseboat",
+          "length_m": 14.0
+        }
+      ]
+    },
+    {
+      "source": "sprites_character_red_px_02.png",
+      "out_dir": "sprites/characters",
+      "pixel": {
+        "block": 45.9,
+        "colors": 12,
+        "merge_px": 1
+      },
+      "sprites": [
+        {
+          "name": "player_stand",
+          "length_m": 0.95,
+          "variants": {
+            "red": null,
+            "yellow": 50,
+            "green": 120,
+            "blue": 220,
+            "purple": 280
+          }
+        },
+        {
+          "name": "player_walk",
+          "length_m": 1.05,
+          "variants": {
+            "red": null,
+            "yellow": 50,
+            "green": 120,
+            "blue": 220,
+            "purple": 280
+          }
+        },
+        {
+          "name": "player_down",
+          "length_m": 1.15,
+          "variants": {
+            "red": null,
+            "yellow": 50,
+            "green": 120,
+            "blue": 220,
+            "purple": 280
+          }
+        }
       ]
     }
   ],
@@ -75,9 +218,29 @@
     {
       "source": "facades_canal_houses_px_01.png",
       "out_dir": "buildings/facades",
-      "crop": [0, 0, 2752, 1388],
-      "pixel": {"block": 5.733, "ppm": 16, "colors": 32, "remove_rows": [[101, 141]]},
-      "split_x": [110, 199, 288, 378],
+      "crop": [
+        0,
+        0,
+        2752,
+        1388
+      ],
+      "pixel": {
+        "block": 5.733,
+        "ppm": 16,
+        "colors": 32,
+        "remove_rows": [
+          [
+            101,
+            141
+          ]
+        ]
+      },
+      "split_x": [
+        110,
+        199,
+        288,
+        378
+      ],
       "houses": [
         "canal_house_koffie",
         "canal_house_neck_brown",

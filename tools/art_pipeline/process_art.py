@@ -116,10 +116,28 @@ def process_pixel_texture(spec: dict) -> dict:
             "meters": [round(w / ppm, 3), round(h / ppm, 3)], "pixel": True}
 
 
+def recolor(rgba: np.ndarray, hue_deg: float) -> np.ndarray:
+    """Move strongly saturated reds (e.g. a hoodie) to another hue."""
+    hsv = np.asarray(Image.fromarray(rgba[..., :3]).convert("HSV")).copy()
+    h, s = hsv[..., 0].astype(int), hsv[..., 1].astype(int)
+    red = ((h < 12) | (h > 243)) & (s > 150) & (rgba[..., 3] > 0)
+    hsv[..., 0][red] = int(hue_deg / 360 * 255) % 256
+    out = rgba.copy()
+    channels = [Image.fromarray(np.ascontiguousarray(hsv[..., i])) for i in range(3)]
+    out[..., :3] = np.asarray(Image.merge("HSV", channels).convert("RGB"))
+    return out
+
+
 def process_pixel_sheet(spec: dict) -> dict:
     rgba = binary_background(load_native(spec))
+    if spec["pixel"].get("open"):
+        # Clear 1-pixel-thin background grid lines.
+        thick = ndimage.binary_opening(rgba[..., 3] > 0, structure=np.ones((2, 2)))
+        rgba[~thick] = 0
     solid = rgba[..., 3] > 0
-    labels, n = ndimage.label(ndimage.binary_dilation(solid, iterations=2))
+    # Parts closer than merge_px (e.g. a bike's pedals) count as one sprite.
+    merge = spec["pixel"].get("merge_px", 2)
+    labels, n = ndimage.label(ndimage.binary_dilation(solid, iterations=merge) if merge else solid)
     boxes = [b for b, s in zip(ndimage.find_objects(labels), ndimage.sum(solid, labels, range(1, n + 1)))
              if s > 20]
     boxes.sort(key=lambda b: b[1].start)
@@ -134,11 +152,14 @@ def process_pixel_sheet(spec: dict) -> dict:
         # "rotate" is counter-clockwise degrees, as in the line-art path.
         img = np.rot90(img, k=sprite.get("rotate", 0) // 90)
         img = quantize(np.ascontiguousarray(img), spec["pixel"].get("colors", 24))
-        path = save_png(img, f"{spec['out_dir']}/{sprite['name']}.png")
         h, w = img.shape[:2]
         m_per_px = sprite["length_m"] / h
-        out[sprite["name"]] = {"file": str(path.relative_to(OUT)), "size_px": [w, h],
-                               "size_m": [round(w * m_per_px, 3), round(h * m_per_px, 3)], "pixel": True}
+        variants = sprite.get("variants", {"": None})
+        for suffix, hue in variants.items():
+            name = sprite["name"] + (f"_{suffix}" if suffix else "")
+            path = save_png(img if hue is None else recolor(img, hue), f"{spec['out_dir']}/{name}.png")
+            out[name] = {"file": str(path.relative_to(OUT)), "size_px": [w, h],
+                         "size_m": [round(w * m_per_px, 3), round(h * m_per_px, 3)], "pixel": True}
     return out
 
 

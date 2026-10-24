@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scenes/vehicles/car.gd" id="1_car"]
-[ext_resource type="Texture2D" path="res://assets/sprites/vehicles/car_hatchback_green.png" id="2_tex"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vehicles/car_blue.png" id="2_tex"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_car"]
 size = Vector3(2.2, 1.4, 3.8)

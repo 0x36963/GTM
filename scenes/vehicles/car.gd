@@ -20,7 +20,7 @@ var _headlights: Array[SpotLight3D] = []
 
 func _ready() -> void:
 	motion_mode = CharacterBody3D.MOTION_MODE_FLOATING
-	_sprite.pixel_size = ArtDb.pixel_size(ArtDb.entry("sprites", "car_hatchback_green"))
+	_sprite.pixel_size = ArtDb.pixel_size(ArtDb.entry("sprites", "car_blue"))
 	_sprite.texture_filter = ArtDb.filter()
 	for side: float in [-0.6, 0.6]:
 		var light := SpotLight3D.new()
